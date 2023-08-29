@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:quote/ApiService.dart';
+import 'package:quote/fontStyle.dart';
 import 'package:quote/quote.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_share/flutter_share.dart';
@@ -19,6 +20,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Inspirational Quotes App',
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -46,6 +48,7 @@ class _QuotesScreenState extends State<QuotesScreen> {
   void initState() {
     super.initState();
     _pageController = PageController();
+    list();
     _loadFavoriteQuoteStatus();
   }
 
@@ -75,7 +78,44 @@ class _QuotesScreenState extends State<QuotesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.red,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        actions: [
+          IconButton(
+            icon: Icon(
+              _isFavorite ? Icons.favorite : Icons.favorite_border,
+              color: Colors.red,
+            ),
+            onPressed: _toggleFavorite,
+          ),
+          IconButton(
+            icon: Icon(
+              Icons.share,
+              color: Colors.grey[700],
+            ),
+            onPressed: _shareQuote,
+          ),
+        ],
+        title: Text.rich(
+          TextSpan(
+              text: ';;',
+              style: TextStyle(
+                  fontFamily: 'Cormorant',
+                  fontWeight: FontWeight.w900,
+                  color: Colors.red),
+              children: [
+                TextSpan(
+                  text: '  Quote',
+                  style: TextStyle(
+                      fontSize: 25,
+                      fontFamily: 'Cormorant',
+                      fontWeight: FontWeight.w900,
+                      color: Colors.grey[700]),
+                )
+              ]),
+        ),
+      ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -91,42 +131,49 @@ class _QuotesScreenState extends State<QuotesScreen> {
                 });
               },
               itemBuilder: (context, index) {
-                return Card(
-                  color: Colors.red,
-                  elevation: 4,
+                return Container(
+                  color: Colors.white,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        lists![index].content!,
-                        style: TextStyle(fontSize: 20),
-                        textAlign: TextAlign.center,
-                      ),
-                      SizedBox(height: 10),
-                      Text(
-                        "- ${lists![index].author}",
-                        style: TextStyle(fontSize: 16),
+                        "No.",
+                        style: FontStyle.cormorantStyle,
                         textAlign: TextAlign.end,
                       ),
-                      SizedBox(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          IconButton(
-                            icon: Icon(
-                              _isFavorite
-                                  ? Icons.favorite
-                                  : Icons.favorite_border,
-                              color: Colors.red,
-                            ),
-                            onPressed: _toggleFavorite,
-                          ),
-                          IconButton(
-                            icon: Icon(Icons.share),
-                            onPressed: _shareQuote,
-                          ),
-                        ],
+                      Text(
+                        " ______",
+                        style: FontStyle.cormorantStyle.copyWith(
+                            fontWeight: FontWeight.w300, color: Colors.grey),
+                        textAlign: TextAlign.end,
+                      ),
+                      Text(
+                        "${_currentIndex}",
+                        style: FontStyle.cormorantStyle.copyWith(
+                          fontSize: 25,
+                        ),
+                        textAlign: TextAlign.end,
+                      ),
+                      SelectableText(
+                        lists![index].content!,
+                        style: FontStyle.cormorantStyle.copyWith(
+                            fontWeight: FontWeight.w600, color: Colors.black),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        " ______",
+                        style: FontStyle.cormorantStyle.copyWith(
+                            fontWeight: FontWeight.w300, color: Colors.grey),
+                        textAlign: TextAlign.end,
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        " ${lists![index].author}",
+                        style: FontStyle.cormorantStyle.copyWith(
+                            fontWeight: FontWeight.w600, color: Colors.grey),
+                        textAlign: TextAlign.end,
                       ),
                     ],
                   ),
