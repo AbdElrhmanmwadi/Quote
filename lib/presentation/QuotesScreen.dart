@@ -87,12 +87,23 @@ class _QuotesScreenState extends State<QuotesScreen> {
             backgroundColor: Colors.white,
             elevation: 0,
             actions: [
-              IconButton(
-                icon: Icon(
-                  _isFavorite ? Icons.favorite : Icons.favorite_border,
-                  color: Colors.red,
-                ),
-                onPressed: _toggleFavorite,
+              BlocBuilder<QuotesBloc, QuotesState>(
+                buildWhen: (previous, current) {
+                  return true;
+                },
+                builder: (context, state) {
+                  return IconButton(
+                    icon: Icon(
+                      _isFavorite ? Icons.favorite : Icons.favorite_border,
+                      color: Colors.red,
+                    ),
+                    onPressed: () {
+                      _isFavorite = !_isFavorite;
+                      _quotesBloc
+                          .add(ToggleFavoriteEvent(_currentIndex, _isFavorite));
+                    },
+                  );
+                },
               ),
               IconButton(
                 icon: Icon(

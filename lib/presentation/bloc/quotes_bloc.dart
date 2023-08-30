@@ -1,6 +1,8 @@
 import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 import 'package:quote/core/ApiService.dart';
+import 'package:quote/core/SharedPreferences.dart';
 import 'package:quote/domain/quote.dart';
 
 part 'quotes_event.dart';
@@ -24,6 +26,10 @@ class QuotesBloc extends Bloc<QuotesEvent, QuotesState> {
         } catch (e) {
           emit(QuotesErrorState());
         }
+      } else if (event is ToggleFavoriteEvent) {
+        SharedPrefController()
+            .setData(event.currentIndex.toString(), event.isFavorite);
+        emit(QuotesLoadedState(quotes));
       }
       if (event is FetchQuotesRandomeEvent) {
         emit(QuotesInitialState());
