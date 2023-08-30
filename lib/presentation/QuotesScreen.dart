@@ -25,7 +25,7 @@ class _QuotesScreenState extends State<QuotesScreen> {
   }
 
   Future<void> _loadDataAndFavoriteStatus() async {
-    lists = await ApiServies.getAllQuote();
+    lists = await ApiServies.getQuotesFromSharedPreferences() ??await ApiServies.getAllQuote();
     _loadFavoriteQuoteStatus();
   }
 
@@ -71,6 +71,7 @@ class _QuotesScreenState extends State<QuotesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        
         backgroundColor: Colors.white,
         elevation: 0,
         actions: [
@@ -187,4 +188,3 @@ class _QuotesScreenState extends State<QuotesScreen> {
     );
   }
 }
-

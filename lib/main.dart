@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:quote/core/SharedPreferences.dart';
 import 'package:quote/presentation/QuotesScreen.dart';
 
-void main() {
+void main()async {
   WidgetsFlutterBinding.ensureInitialized();
-  SharedPrefController().init();
+
+await SharedPrefController.initialize();
   runApp(MyApp());
 }
 

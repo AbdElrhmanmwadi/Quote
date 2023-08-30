@@ -6,12 +6,12 @@ class SharedPrefController {
 
   SharedPrefController._();
 
-  init() async {
-    sharedPreferences = await SharedPreferences.getInstance();
-  }
-
   factory SharedPrefController() {
     return _instance ??= SharedPrefController._();
+  }
+
+  static Future<void> initialize() async {
+    sharedPreferences = await SharedPreferences.getInstance();
   }
 
   Future<bool> removeData({
@@ -22,13 +22,16 @@ class SharedPrefController {
 
   setData(String key, var value) async {
     if (value is bool) return await sharedPreferences.setBool(key, value);
-    if (value is String) return await sharedPreferences.setString(key, value);
   }
 
-  getString({
+  Future<void> setString(String key, String value) async {
+    await sharedPreferences.setString(key, value);
+  }
+
+  String? getString({
     required String key,
   }) {
-    return sharedPreferences.getString(key)?? [];
+    return sharedPreferences.getString(key);
   }
 
   dynamic getData({
