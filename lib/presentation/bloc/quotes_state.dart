@@ -11,5 +11,10 @@ class QuotesLoadedState extends QuotesState {
 
   QuotesLoadedState(this.quotes);
 }
+class QuotesLoadedRandomeState extends QuotesState {
+  final List<Results> quotes;
+
+  QuotesLoadedRandomeState(this.quotes);
+}
 
 class QuotesErrorState extends QuotesState {}

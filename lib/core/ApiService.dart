@@ -43,7 +43,7 @@ class ApiServies {
     return null;
   }
 
-  static Future<Results?> getRandomQuote() async {
+  static Future<Results> getRandomQuote() async {
     Results? resultsQuote = Results(
         sId: '11',
         author: 'Abed',

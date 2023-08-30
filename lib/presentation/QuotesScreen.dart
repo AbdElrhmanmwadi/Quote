@@ -21,12 +21,6 @@ List<Results>? lists;
 Results? resuilt;
 
 class _QuotesScreenState extends State<QuotesScreen> {
-  // Future<void> _loadDataAndFavoriteStatus() async {
-  //   lists = await ApiServies.getQuotesFromSharedPreferences() ??
-  //       await ApiServies.getAllQuote();
-  //   _loadFavoriteQuoteStatus();
-  // }
-
   Future<void> _loadFavoriteQuoteStatus() async {
     setState(() {
       _isFavorite =
@@ -89,6 +83,7 @@ class _QuotesScreenState extends State<QuotesScreen> {
             child: Icon(Icons.crisis_alert_outlined),
           ),
           appBar: AppBar(
+            automaticallyImplyLeading: false,
             backgroundColor: Colors.white,
             elevation: 0,
             actions: [
