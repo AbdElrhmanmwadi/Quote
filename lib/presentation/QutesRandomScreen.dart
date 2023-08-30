@@ -4,21 +4,20 @@ import 'package:quote/core/ApiService.dart';
 import 'package:quote/core/SharedPreferences.dart';
 import 'package:quote/domain/quote.dart';
 import 'package:quote/core/fontStyle.dart';
-import 'package:quote/presentation/QutesRandomScreen.dart';
 import 'package:quote/presentation/widget/quoteWidget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class QuotesScreen extends StatefulWidget {
+class QuotesRandomScreen extends StatefulWidget {
   @override
-  _QuotesScreenState createState() => _QuotesScreenState();
+  _QuotesRandomScreenState createState() => _QuotesRandomScreenState();
 }
 
-class _QuotesScreenState extends State<QuotesScreen> {
+class _QuotesRandomScreenState extends State<QuotesRandomScreen> {
   PageController _pageController = PageController();
   int _currentIndex = 0;
   bool _isFavorite = false;
-  List<Results>? lists;
-  Results? resuilt;
+  List<Results> lists = []; // Initialize the list
+  Results? results;
 
   @override
   void initState() {
@@ -28,8 +27,16 @@ class _QuotesScreenState extends State<QuotesScreen> {
   }
 
   Future<void> _loadDataAndFavoriteStatus() async {
-    lists = await ApiServies.getQuotesFromSharedPreferences() ??
-        await ApiServies.getAllQuote();
+    results = await ApiServies.getRandomQuote();
+    print(results!.author);
+
+    if (lists.isNotEmpty) {
+      lists.removeAt(0); // Remove the old quote
+    }
+    lists.add(results!); // Add the new quote
+    // Set index to the fetched quote
+
+    print('$lists asdasssssssssss');
     _loadFavoriteQuoteStatus();
   }
 
@@ -48,12 +55,11 @@ class _QuotesScreenState extends State<QuotesScreen> {
   }
 
   Future<void> _shareQuote() async {
-    if (lists != null &&
-        lists!.isNotEmpty &&
+    if (lists.isNotEmpty &&
         _currentIndex >= 0 &&
-        _currentIndex < lists!.length) {
-      final quoteContent = lists![_currentIndex].content;
-      final quoteAuthor = lists![_currentIndex].author;
+        _currentIndex < lists.length) {
+      final quoteContent = lists[_currentIndex].content;
+      final quoteAuthor = lists[_currentIndex].author;
 
       if (quoteContent != null && quoteAuthor != null) {
         final shareText = '$quoteContent - $quoteAuthor';
@@ -77,13 +83,20 @@ class _QuotesScreenState extends State<QuotesScreen> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.red,
         onPressed: () async {
-          Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => QuotesRandomScreen(),
-          ));
+          results = await ApiServies.getRandomQuote();
+          setState(() {
+            if (lists.isNotEmpty) {
+              lists.removeAt(0); // Remove the old quote
+            }
+            lists.add(results!);
+
+            _currentIndex = lists.length - 1; // Set index to the fetched quote
+          });
         },
         child: Icon(Icons.crisis_alert_outlined),
       ),
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
         elevation: 0,
         actions: [
@@ -122,7 +135,7 @@ class _QuotesScreenState extends State<QuotesScreen> {
               ]),
         ),
       ),
-      body: lists == null
+      body: lists.isEmpty
           ? const Center(
               child: CircularProgressIndicator(),
             )
@@ -133,7 +146,7 @@ class _QuotesScreenState extends State<QuotesScreen> {
                 Expanded(
                   child: PageView.builder(
                     controller: _pageController,
-                    itemCount: lists!.length,
+                    itemCount: lists.length,
                     onPageChanged: (index) {
                       setState(() {
                         _currentIndex = index;
