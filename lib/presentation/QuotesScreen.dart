@@ -21,11 +21,11 @@ List<Results>? lists;
 Results? resuilt;
 
 class _QuotesScreenState extends State<QuotesScreen> {
-  Future<void> _loadDataAndFavoriteStatus() async {
-    lists = await ApiServies.getQuotesFromSharedPreferences() ??
-        await ApiServies.getAllQuote();
-    _loadFavoriteQuoteStatus();
-  }
+  // Future<void> _loadDataAndFavoriteStatus() async {
+  //   lists = await ApiServies.getQuotesFromSharedPreferences() ??
+  //       await ApiServies.getAllQuote();
+  //   _loadFavoriteQuoteStatus();
+  // }
 
   Future<void> _loadFavoriteQuoteStatus() async {
     setState(() {
@@ -130,7 +130,7 @@ class _QuotesScreenState extends State<QuotesScreen> {
           body: BlocBuilder<QuotesBloc, QuotesState>(
             builder: (context, state) {
               if (state is QuotesLoadedState) {
-                lists = state.quotes;
+                lists = ApiServies.data ?? state.quotes;
                 return Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
