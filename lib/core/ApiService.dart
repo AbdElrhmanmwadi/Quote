@@ -13,7 +13,7 @@ class ApiServies {
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
       listResults = quote.fromJson(jsonData).results;
-       data=listResults ;
+      data = listResults;
       storeQuotesInSharedPreferences(listResults);
       return data;
     }
@@ -41,5 +41,27 @@ class ApiServies {
       return quotes;
     }
     return null;
+  }
+
+  static Future<Results?> getRandomQuote() async {
+    Results? resultsQuote = Results(
+        sId: '11',
+        author: 'Abed',
+        content: 'OOOO',
+        tags: [],
+        authorSlug: 'YYY',
+        length: 100,
+        dateAdded: '2023-04-14',
+        dateModified: '2023-04-14');
+    Uri url = Uri.parse('https://api.quotable.io/random');
+    http.Response response = await http.get(url);
+    if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body);
+      resultsQuote = Results.fromJson(jsonData);
+
+      return resultsQuote;
+    }
+
+    return resultsQuote;
   }
 }
