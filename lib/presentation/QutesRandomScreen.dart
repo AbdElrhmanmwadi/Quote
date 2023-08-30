@@ -30,13 +30,8 @@ class _QuotesRandomScreenState extends State<QuotesRandomScreen> {
     results = await ApiServies.getRandomQuote();
     print(results!.author);
 
-    if (lists.isNotEmpty) {
-      lists.removeAt(0); // Remove the old quote
-    }
-    lists.add(results!); // Add the new quote
-    // Set index to the fetched quote
+    lists.add(results!);
 
-    print('$lists asdasssssssssss');
     _loadFavoriteQuoteStatus();
   }
 
@@ -86,11 +81,11 @@ class _QuotesRandomScreenState extends State<QuotesRandomScreen> {
           results = await ApiServies.getRandomQuote();
           setState(() {
             if (lists.isNotEmpty) {
-              lists.removeAt(0); // Remove the old quote
+              lists.removeAt(0);
             }
             lists.add(results!);
 
-            _currentIndex = lists.length - 1; // Set index to the fetched quote
+            _currentIndex = lists.length - 1;
           });
         },
         child: Icon(Icons.crisis_alert_outlined),

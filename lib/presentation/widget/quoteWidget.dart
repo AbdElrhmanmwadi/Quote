@@ -17,6 +17,7 @@ class QuoteWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: EdgeInsets.all(5),
       color: Colors.white,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
