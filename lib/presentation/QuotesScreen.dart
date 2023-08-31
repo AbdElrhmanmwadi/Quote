@@ -204,17 +204,43 @@ Future<void> _showQuoteDialog(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        contentPadding: EdgeInsets.all(10),
-        content: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text('Daily Quote'),
-            Text(quote),
-            SizedBox(height: 8),
-            Text('- $author'),
-          ],
+        title: Container(
+          child: Card(
+            elevation: 0,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Container(
+              width: 100,
+              alignment: Alignment.center,
+              child: Column(
+                children: [
+                  Text(
+                    'Daily Quote',
+                    style: FontStyle.cormorantStyle.copyWith(
+                        fontSize: 25,
+                        fontFamily: 'Cormorant',
+                        fontWeight: FontWeight.w900,
+                        color: Colors.red),
+                  ),
+                  Divider(),
+                  Text("' $quote '",
+                      style: FontStyle.cormorantStyle.copyWith(
+                          fontSize: 20,
+                          fontFamily: 'Cormorant',
+                          fontWeight: FontWeight.w500,
+                          color: Colors.grey[900])),
+                  Divider(),
+                  Text("$author",
+                      style: FontStyle.cormorantStyle.copyWith(
+                          fontSize: 20,
+                          fontFamily: 'Cormorant',
+                          fontWeight: FontWeight.w500,
+                          color: Colors.grey[900])),
+                ],
+              ),
+            ),
+          ),
         ),
       );
     },
