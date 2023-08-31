@@ -189,7 +189,7 @@ Future<void> checkAndShowQuote(context) async {
   final DateTime now = DateTime.now();
   final DateTime lastDate = DateTime.tryParse(lastShownDate) ?? now;
 
-  if (now.difference(lastDate).inSeconds >= 20) {
+  if (now.difference(lastDate).inSeconds >= 3) {
     var data = await ApiServies.getRandomQuote();
 
     await _showQuoteDialog(context, data.content!, data.author!);
@@ -204,22 +204,18 @@ Future<void> _showQuoteDialog(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        contentPadding: EdgeInsets.all(5),
-        title: Text('Daily Quote'),
+        contentPadding: EdgeInsets.all(10),
         content: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
+            Text('Daily Quote'),
             Text(quote),
             SizedBox(height: 8),
             Text('- $author'),
           ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('Close'),
-          ),
-        ],
       );
     },
   );
