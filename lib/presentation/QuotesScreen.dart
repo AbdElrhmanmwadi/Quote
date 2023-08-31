@@ -64,6 +64,9 @@ class _QuotesScreenState extends State<QuotesScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await checkAndShowQuote(context);
+    });
     _quotesBloc = QuotesBloc();
     _quotesBloc.add(FetchQuotesEvent());
   }
@@ -76,9 +79,10 @@ class _QuotesScreenState extends State<QuotesScreen> {
           floatingActionButton: FloatingActionButton(
             backgroundColor: Colors.red,
             onPressed: () async {
-              Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => QuotesRandomScreen(),
-              ));
+              // Navigator.of(context).push(MaterialPageRoute(
+              //   builder: (context) => QuotesRandomScreen(),
+              // ));
+              await checkAndShowQuote(context);
             },
             child: Icon(Icons.crisis_alert_outlined),
           ),
@@ -176,4 +180,47 @@ class _QuotesScreenState extends State<QuotesScreen> {
     _quotesBloc.close();
     super.dispose();
   }
+}
+
+Future<void> checkAndShowQuote(context) async {
+  final lastShownDate =
+      SharedPrefController().getString(key: 'last_shown_date') ?? '';
+
+  final DateTime now = DateTime.now();
+  final DateTime lastDate = DateTime.tryParse(lastShownDate) ?? now;
+
+  if (now.difference(lastDate).inSeconds >= 20) {
+    var data = await ApiServies.getRandomQuote();
+
+    await _showQuoteDialog(context, data.content!, data.author!);
+
+    SharedPrefController().setString('last_shown_date', now.toIso8601String());
+  }
+}
+
+Future<void> _showQuoteDialog(
+    BuildContext context, String quote, String author) async {
+  await showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        contentPadding: EdgeInsets.all(5),
+        title: Text('Daily Quote'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(quote),
+            SizedBox(height: 8),
+            Text('- $author'),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Close'),
+          ),
+        ],
+      );
+    },
+  );
 }
