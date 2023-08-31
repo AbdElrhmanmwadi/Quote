@@ -112,6 +112,7 @@ class _QuotesScreenState extends State<QuotesScreen> {
                   children: [
                     Expanded(
                       child: PageView.builder(
+                        scrollDirection: Axis.vertical,
                         controller: _pageController,
                         itemCount: lists!.length,
                         onPageChanged: (index) {

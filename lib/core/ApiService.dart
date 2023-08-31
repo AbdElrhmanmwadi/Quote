@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:quote/core/SharedPreferences.dart';
 import 'package:quote/domain/quote.dart';
+import 'package:quote/domain/tag.dart';
 
 class ApiServies {
   static List<Results>? data = [];
@@ -64,5 +65,18 @@ class ApiServies {
     }
 
     return resultsQuote;
+  }
+
+  static Future<List<Tag>> getAllTag() async {
+    List<Tag> tags = [];
+    Uri url = Uri.parse('https://api.quotable.io/tags');
+    http.Response response = await http.get(url);
+    if (response.statusCode == 200) {
+      final jsontage = json.decode(response.body);
+      tags = jsontage.map<Tag>((json) => Tag.fromJson(json)).toList();
+      tags[0].slug;
+      return tags;
+    }
+    return tags;
   }
 }

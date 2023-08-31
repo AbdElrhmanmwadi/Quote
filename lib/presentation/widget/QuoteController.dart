@@ -12,7 +12,7 @@ class QuoteController {
   final DateTime now = DateTime.now();
   final DateTime lastDate = DateTime.tryParse(lastShownDate) ?? now;
 
-  if (now.difference(lastDate).inSeconds >= 3) {
+  if (now.difference(lastDate).inDays >= 1) {
     var data = await ApiServies.getRandomQuote();
 
     await _showQuoteDialog(context, data.content!, data.author!);
