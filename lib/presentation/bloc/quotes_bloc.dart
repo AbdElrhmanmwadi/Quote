@@ -10,7 +10,6 @@ part 'quotes_state.dart';
 
 class QuotesBloc extends Bloc<QuotesEvent, QuotesState> {
   List<Results> quotes = [];
-  bool _isFavorite = false;
   QuotesBloc() : super(QuotesInitialState()) {
     on<QuotesEvent>((event, emit) async {
       if (event is FetchQuotesEvent) {

@@ -58,7 +58,7 @@ class QuoteWidget extends StatelessWidget {
           Text(
             " ${lists![index].author}",
             style: FontStyle.cormorantStyle
-                .copyWith(fontWeight: FontWeight.w600, color: Colors.grey),
+                .copyWith(fontWeight: FontWeight.w400, color: Colors.black),
             textAlign: TextAlign.end,
           ),
         ],

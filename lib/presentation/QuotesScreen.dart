@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_share/flutter_share.dart';
+
 import 'package:quote/core/ApiService.dart';
 import 'package:quote/core/SharedPreferences.dart';
-import 'package:quote/core/fontStyle.dart';
+
 import 'package:quote/domain/quote.dart';
 import 'package:quote/presentation/QutesRandomScreen.dart';
 import 'package:quote/presentation/bloc/quotes_bloc.dart';
+import 'package:quote/presentation/widget/QuoteController.dart';
 import 'package:quote/presentation/widget/quoteWidget.dart';
 
 class QuotesScreen extends StatefulWidget {
@@ -35,37 +36,13 @@ class _QuotesScreenState extends State<QuotesScreen> {
     });
   }
 
-  Future<void> _shareQuote() async {
-    if (lists != null &&
-        lists!.isNotEmpty &&
-        _currentIndex >= 0 &&
-        _currentIndex < lists!.length) {
-      final quoteContent = lists![_currentIndex].content;
-      final quoteAuthor = lists![_currentIndex].author;
-
-      if (quoteContent != null && quoteAuthor != null) {
-        final shareText = '$quoteContent - $quoteAuthor';
-
-        try {
-          await FlutterShare.share(
-            title: 'Check out this quote!',
-            text: shareText,
-          );
-        } catch (e) {
-          // Handle sharing error
-          print('Sharing error: $e');
-        }
-      }
-    }
-  }
-
   late QuotesBloc _quotesBloc;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await checkAndShowQuote(context);
+      await QuoteController.checkAndShowQuote(context);
     });
     _quotesBloc = QuotesBloc();
     _quotesBloc.add(FetchQuotesEvent());
@@ -79,10 +56,9 @@ class _QuotesScreenState extends State<QuotesScreen> {
           floatingActionButton: FloatingActionButton(
             backgroundColor: Colors.red,
             onPressed: () async {
-              // Navigator.of(context).push(MaterialPageRoute(
-              //   builder: (context) => QuotesRandomScreen(),
-              // ));
-              await checkAndShowQuote(context);
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => QuotesRandomScreen(),
+              ));
             },
             child: Icon(Icons.crisis_alert_outlined),
           ),
@@ -91,26 +67,20 @@ class _QuotesScreenState extends State<QuotesScreen> {
             backgroundColor: Colors.white,
             elevation: 0,
             actions: [
-              BlocBuilder<QuotesBloc, QuotesState>(
-                buildWhen: (previous, current) {
-                  return true;
-                },
-                builder: (context, state) {
-                  return IconButton(
-                      icon: Icon(
-                        _isFavorite ? Icons.favorite : Icons.favorite_border,
-                        color: Colors.red,
-                      ),
-                      onPressed: _toggleFavorite);
-                },
-              ),
               IconButton(
-                icon: Icon(
-                  Icons.share,
-                  color: Colors.grey[700],
-                ),
-                onPressed: _shareQuote,
-              ),
+                  icon: Icon(
+                    _isFavorite ? Icons.favorite : Icons.favorite_border,
+                    color: Colors.red,
+                  ),
+                  onPressed: _toggleFavorite),
+              IconButton(
+                  icon: Icon(
+                    Icons.share,
+                    color: Colors.grey[700],
+                  ),
+                  onPressed: () async {
+                    QuoteController.shareQuote(lists, _currentIndex);
+                  }),
             ],
             title: Text.rich(
               TextSpan(
@@ -180,69 +150,4 @@ class _QuotesScreenState extends State<QuotesScreen> {
     _quotesBloc.close();
     super.dispose();
   }
-}
-
-Future<void> checkAndShowQuote(context) async {
-  final lastShownDate =
-      SharedPrefController().getString(key: 'last_shown_date') ?? '';
-
-  final DateTime now = DateTime.now();
-  final DateTime lastDate = DateTime.tryParse(lastShownDate) ?? now;
-
-  if (now.difference(lastDate).inSeconds >= 3) {
-    var data = await ApiServies.getRandomQuote();
-
-    await _showQuoteDialog(context, data.content!, data.author!);
-
-    SharedPrefController().setString('last_shown_date', now.toIso8601String());
-  }
-}
-
-Future<void> _showQuoteDialog(
-    BuildContext context, String quote, String author) async {
-  await showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Container(
-          child: Card(
-            elevation: 0,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Container(
-              width: 100,
-              alignment: Alignment.center,
-              child: Column(
-                children: [
-                  Text(
-                    'Daily Quote',
-                    style: FontStyle.cormorantStyle.copyWith(
-                        fontSize: 25,
-                        fontFamily: 'Cormorant',
-                        fontWeight: FontWeight.w900,
-                        color: Colors.red),
-                  ),
-                  Divider(),
-                  Text("' $quote '",
-                      style: FontStyle.cormorantStyle.copyWith(
-                          fontSize: 20,
-                          fontFamily: 'Cormorant',
-                          fontWeight: FontWeight.w500,
-                          color: Colors.grey[900])),
-                  Divider(),
-                  Text("$author",
-                      style: FontStyle.cormorantStyle.copyWith(
-                          fontSize: 20,
-                          fontFamily: 'Cormorant',
-                          fontWeight: FontWeight.w500,
-                          color: Colors.grey[900])),
-                ],
-              ),
-            ),
-          ),
-        ),
-      );
-    },
-  );
 }

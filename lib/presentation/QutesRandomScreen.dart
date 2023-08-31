@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_share/flutter_share.dart';
-import 'package:quote/core/ApiService.dart';
-import 'package:quote/core/SharedPreferences.dart';
+
 import 'package:quote/domain/quote.dart';
-import 'package:quote/core/fontStyle.dart';
+
 import 'package:quote/presentation/bloc/quotes_bloc.dart';
+import 'package:quote/presentation/widget/QuoteController.dart';
 import 'package:quote/presentation/widget/quoteWidget.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class QuotesRandomScreen extends StatefulWidget {
   @override
@@ -15,10 +13,10 @@ class QuotesRandomScreen extends StatefulWidget {
 }
 
 class _QuotesRandomScreenState extends State<QuotesRandomScreen> {
-  PageController _pageController = PageController();
-  int _currentIndex = 0;
-  bool _isFavorite = false;
-  List<Results> lists = []; // Initialize the list
+  final PageController _pageController = PageController();
+  final int _currentIndex = 0;
+
+  List<Results> lists = [];
   Results? results;
   late QuotesBloc _quotesBloc;
 
@@ -27,43 +25,6 @@ class _QuotesRandomScreenState extends State<QuotesRandomScreen> {
     super.initState();
     _quotesBloc = QuotesBloc();
     _quotesBloc.add(FetchQuotesRandomeEvent());
-  }
-
-  Future<void> _loadFavoriteQuoteStatus() async {
-    setState(() {
-      _isFavorite =
-          SharedPrefController().getData(key: _currentIndex.toString());
-    });
-  }
-
-  void _toggleFavorite() async {
-    setState(() {
-      _isFavorite = !_isFavorite;
-      SharedPrefController().setData(_currentIndex.toString(), _isFavorite);
-    });
-  }
-
-  Future<void> _shareQuote() async {
-    if (lists.isNotEmpty &&
-        _currentIndex >= 0 &&
-        _currentIndex < lists.length) {
-      final quoteContent = lists[_currentIndex].content;
-      final quoteAuthor = lists[_currentIndex].author;
-
-      if (quoteContent != null && quoteAuthor != null) {
-        final shareText = '$quoteContent - $quoteAuthor';
-
-        try {
-          await FlutterShare.share(
-            title: 'Check out this quote!',
-            text: shareText,
-          );
-        } catch (e) {
-          // Handle sharing error
-          print('Sharing error: $e');
-        }
-      }
-    }
   }
 
   @override
@@ -85,17 +46,12 @@ class _QuotesRandomScreenState extends State<QuotesRandomScreen> {
             actions: [
               IconButton(
                 icon: Icon(
-                  _isFavorite ? Icons.favorite : Icons.favorite_border,
-                  color: Colors.red,
-                ),
-                onPressed: _toggleFavorite,
-              ),
-              IconButton(
-                icon: Icon(
                   Icons.share,
                   color: Colors.grey[700],
                 ),
-                onPressed: _shareQuote,
+                onPressed: () async {
+                  await QuoteController.shareQuote(lists, _currentIndex);
+                },
               ),
             ],
             title: Text.rich(
@@ -131,12 +87,7 @@ class _QuotesRandomScreenState extends State<QuotesRandomScreen> {
                       child: PageView.builder(
                         controller: _pageController,
                         itemCount: lists.length,
-                        onPageChanged: (index) {
-                          setState(() {
-                            _currentIndex = index;
-                            _loadFavoriteQuoteStatus();
-                          });
-                        },
+                        onPageChanged: (index) {},
                         itemBuilder: (context, index) {
                           return QuoteWidget(
                             currentIndex: _currentIndex,
