@@ -12,12 +12,13 @@ class QuotesInitialState extends QuotesState {
 
 class QuotesLoadedState extends QuotesState {
   final List<Results> quotes;
+  final List<Tag> tag;
 
-  QuotesLoadedState(this.quotes);
+  QuotesLoadedState(this.quotes, this.tag);
   
   @override
   
-  List<Object?> get props => [];
+  List<Object?> get props => [quotes,tag];
 }
 class QuotesLoadedRandomeState extends QuotesState {
   final List<Results> quotes;
@@ -26,7 +27,7 @@ class QuotesLoadedRandomeState extends QuotesState {
   
   @override
   
-  List<Object?> get props => [];
+  List<Object?> get props => [quotes];
 }
 
 class QuotesErrorState extends QuotesState {

@@ -5,6 +5,7 @@ import 'package:quote/core/ApiService.dart';
 import 'package:quote/core/SharedPreferences.dart';
 
 import 'package:quote/domain/quote.dart';
+import 'package:quote/domain/tag.dart';
 import 'package:quote/presentation/QutesRandomScreen.dart';
 import 'package:quote/presentation/bloc/quotes_bloc.dart';
 import 'package:quote/presentation/widget/QuoteController.dart';
@@ -19,6 +20,7 @@ PageController _pageController = PageController();
 int _currentIndex = 0;
 bool _isFavorite = false;
 List<Results>? lists;
+List<Tag>? listTage;
 Results? resuilt;
 
 class _QuotesScreenState extends State<QuotesScreen> {
@@ -106,13 +108,39 @@ class _QuotesScreenState extends State<QuotesScreen> {
             builder: (context, state) {
               if (state is QuotesLoadedState) {
                 lists = ApiServies.data ?? state.quotes;
+
+                listTage = ApiServies.tags;
+                print(listTage!.length);
+
                 return Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    Container(
+                        color: Colors.white,
+                        height: 120,
+                        child: Wrap(
+                          children: listTage!
+                              .map((e) => Padding(
+                                    padding: const EdgeInsets.all(2.0),
+                                    child: Chip(
+                                      onDeleted: () {
+                                        setState(() {
+                                          listTage!.remove(e);
+                                        });
+                                        ;
+                                      },
+                                      label: Text('${e.name}'),
+                                    ),
+                                  ))
+                              .toList(),
+                        )),
+                    SizedBox(
+                      height: 25,
+                    ),
                     Expanded(
                       child: PageView.builder(
-                        scrollDirection: Axis.vertical,
+                        scrollDirection: Axis.horizontal,
                         controller: _pageController,
                         itemCount: lists!.length,
                         onPageChanged: (index) {

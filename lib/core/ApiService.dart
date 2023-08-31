@@ -7,6 +7,7 @@ import 'package:quote/domain/tag.dart';
 
 class ApiServies {
   static List<Results>? data = [];
+ static List<Tag> tags = [];
   static Future<List<Results>?> getAllQuote() async {
     List<Results>? listResults;
     Uri url = Uri.parse('https://api.quotable.io/quotes');
@@ -68,7 +69,7 @@ class ApiServies {
   }
 
   static Future<List<Tag>> getAllTag() async {
-    List<Tag> tags = [];
+    
     Uri url = Uri.parse('https://api.quotable.io/tags');
     http.Response response = await http.get(url);
     if (response.statusCode == 200) {
