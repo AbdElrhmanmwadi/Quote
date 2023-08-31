@@ -93,16 +93,11 @@ class _QuotesScreenState extends State<QuotesScreen> {
                 },
                 builder: (context, state) {
                   return IconButton(
-                    icon: Icon(
-                      _isFavorite ? Icons.favorite : Icons.favorite_border,
-                      color: Colors.red,
-                    ),
-                    onPressed: () {
-                      _isFavorite = !_isFavorite;
-                      _quotesBloc
-                          .add(ToggleFavoriteEvent(_currentIndex, _isFavorite));
-                    },
-                  );
+                      icon: Icon(
+                        _isFavorite ? Icons.favorite : Icons.favorite_border,
+                        color: Colors.red,
+                      ),
+                      onPressed: _toggleFavorite);
                 },
               ),
               IconButton(
