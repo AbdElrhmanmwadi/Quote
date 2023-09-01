@@ -14,18 +14,26 @@ class QuotesBloc extends Bloc<QuotesEvent, QuotesState> {
   QuotesBloc() : super(QuotesInitialState()) {
     on<QuotesEvent>((event, emit) async {
       if (event is FetchQuotesEvent) {
+        if (event.last == 20) return;
         emit(QuotesInitialState());
+
         try {
           List<Results>? quotes =
-            
-                  await ApiServies.getAllQuotesFromPages(1, 20);
+              await ApiServies.getAllQuotesFromPages(event.start!, event.last!);
           List<Tag> listTag = await ApiServies.getAllTag();
-          if (quotes != null) {
+          if (quotes.isNotEmpty && event.last != 20) {
+            print(1);
+            print(event.start!);
+            print(event.last!);
             emit(QuotesLoadedState(quotes, listTag));
+          } else if (quotes.isEmpty) {
+            print(2);
           } else {
+            print('3');
             emit(QuotesErrorState());
           }
         } catch (e) {
+          print(3);
           emit(QuotesErrorState());
         }
       }
