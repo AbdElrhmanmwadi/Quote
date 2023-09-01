@@ -7,20 +7,36 @@ import 'package:quote/domain/tag.dart';
 
 class ApiServies {
   static List<Results>? data = [];
- static List<Tag> tags = [];
-  static Future<List<Results>?> getAllQuote() async {
+  static List<Tag> tags = [];
+  static Future<List<Results>?> getAllQuote(index) async {
     List<Results>? listResults;
-    Uri url = Uri.parse('https://api.quotable.io/quotes');
+    Uri url = Uri.parse('https://api.quotable.io/quotes?page=$index');
     http.Response response = await http.get(url);
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
       listResults = quote.fromJson(jsonData).results;
       data = listResults;
-      storeQuotesInSharedPreferences(listResults);
+
       return data;
     }
 
     return data;
+  }
+
+  static Future<List<Results>> getAllQuotesFromPages(
+      int startPage, int endPage) async {
+    List<Results> allQuotes = [];
+
+    for (int i = startPage; i <= endPage; i++) {
+      List<Results>? quotes = await getAllQuote(i);
+      if (quotes != null) {
+        allQuotes.addAll(quotes);
+      }
+    }
+    storeQuotesInSharedPreferences(allQuotes);
+    data = allQuotes;
+
+    return allQuotes;
   }
 
   static Future<void> storeQuotesInSharedPreferences(
@@ -69,7 +85,6 @@ class ApiServies {
   }
 
   static Future<List<Tag>> getAllTag() async {
-    
     Uri url = Uri.parse('https://api.quotable.io/tags');
     http.Response response = await http.get(url);
     if (response.statusCode == 200) {

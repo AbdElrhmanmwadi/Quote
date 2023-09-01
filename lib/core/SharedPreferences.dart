@@ -13,6 +13,7 @@ class SharedPrefController {
   static Future<void> initialize() async {
     sharedPreferences = await SharedPreferences.getInstance();
   }
+  
 
   Future<bool> removeData({
     required String key,
@@ -32,6 +33,10 @@ class SharedPrefController {
     required String key,
   }) {
     return sharedPreferences.getString(key);
+  }
+  Future  clear(
+  ) async{
+    return await sharedPreferences.clear();
   }
 
   dynamic getData({

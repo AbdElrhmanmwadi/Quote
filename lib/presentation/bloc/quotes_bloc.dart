@@ -17,8 +17,8 @@ class QuotesBloc extends Bloc<QuotesEvent, QuotesState> {
         emit(QuotesInitialState());
         try {
           List<Results>? quotes =
-              await ApiServies.getQuotesFromSharedPreferences() ??
-                  await ApiServies.getAllQuote();
+            
+                  await ApiServies.getAllQuotesFromPages(1, 20);
           List<Tag> listTag = await ApiServies.getAllTag();
           if (quotes != null) {
             emit(QuotesLoadedState(quotes, listTag));
