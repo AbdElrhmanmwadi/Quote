@@ -33,7 +33,7 @@ class ApiServies {
         allQuotes.addAll(quotes);
       }
     }
-    storeQuotesInSharedPreferences(allQuotes);
+    // storeQuotesInSharedPreferences(allQuotes);
     data = allQuotes;
 
     return allQuotes;
