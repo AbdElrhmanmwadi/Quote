@@ -16,7 +16,6 @@ class QuotesScreen extends StatefulWidget {
   _QuotesScreenState createState() => _QuotesScreenState();
 }
 
-PageController _pageController = PageController();
 int _currentIndex = 0;
 bool _isFavorite = false;
 List<Results>? lists;
@@ -24,6 +23,8 @@ List<Tag>? listTage;
 Results? resuilt;
 
 class _QuotesScreenState extends State<QuotesScreen> {
+  ScrollController _scrollController = ScrollController();
+
   Future<void> _loadFavoriteQuoteStatus() async {
     setState(() {
       _isFavorite =
@@ -40,6 +41,8 @@ class _QuotesScreenState extends State<QuotesScreen> {
 
   late QuotesBloc _quotesBloc;
 
+  int start = 1;
+  int last = 2;
   @override
   void initState() {
     super.initState();
@@ -47,7 +50,18 @@ class _QuotesScreenState extends State<QuotesScreen> {
       await QuoteController.checkAndShowQuote(context);
     });
     _quotesBloc = QuotesBloc();
-    _quotesBloc.add(FetchQuotesEvent());
+    _quotesBloc.add(FetchQuotesEvent(start: start, last: last));
+    _scrollController.addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.offset;
+    if (currentScroll >= (maxScroll * 0.9)) {
+      context
+          .read<QuotesBloc>()
+          .add(FetchQuotesEvent(start: start + 1, last: last + 1));
+    }
   }
 
   @override
@@ -107,7 +121,8 @@ class _QuotesScreenState extends State<QuotesScreen> {
           body: BlocBuilder<QuotesBloc, QuotesState>(
             builder: (context, state) {
               if (state is QuotesLoadedState) {
-                lists = ApiServies.data ?? state.quotes;
+                lists = state.quotes;
+                //lists = ApiServies.data ?? state.quotes;
 
                 listTage = ApiServies.tags;
                 print(listTage!.length);
@@ -116,42 +131,42 @@ class _QuotesScreenState extends State<QuotesScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Container(
-                        color: Colors.white,
-                        height: 120,
-                        child: Wrap(
-                          children: listTage!
-                              .map((e) => Padding(
-                                    padding: const EdgeInsets.all(2.0),
-                                    child: Chip(
-                                      onDeleted: () {
-                                        setState(() {
-                                          listTage!.remove(e);
-                                        });
-                                        ;
-                                      },
-                                      label: Text('${e.name}'),
-                                    ),
-                                  ))
-                              .toList(),
-                        )),
-                    SizedBox(
-                      height: 25,
-                    ),
+                    // Container(
+                    //     color: Colors.white,
+                    //     height: 120,
+                    //     child: Wrap(
+                    //       children: listTage!
+                    //           .map((e) => Padding(
+                    //                 padding: const EdgeInsets.all(2.0),
+                    //                 child: Chip(
+                    //                   onDeleted: () {
+                    //                     setState(() {
+                    //                       listTage!.remove(e);
+                    //                     });
+                    //                     ;
+                    //                   },
+                    //                   label: Text('${e.name}'),
+                    //                 ),
+                    //               ))
+                    //           .toList(),
+                    //     )),
+                    // SizedBox(
+                    //   height: 25,
+                    // ),
                     Expanded(
-                      child: PageView.builder(
-                        scrollDirection: Axis.horizontal,
-                        controller: _pageController,
+                      child: ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        controller: _scrollController,
                         itemCount: lists!.length,
-                        onPageChanged: (index) {
-                          setState(() {
-                            _currentIndex = index;
-                            _loadFavoriteQuoteStatus();
-                          });
-                        },
+                        // onPageChanged: (index) {
+                        //   setState(() {
+                        //     _currentIndex = index;
+                        //     _loadFavoriteQuoteStatus();
+                        //   });
+                        // },
                         itemBuilder: (context, index) {
                           return QuoteWidget(
-                            currentIndex: _currentIndex,
+                            currentIndex: index + 1,
                             lists: lists,
                             index: index,
                           );
@@ -177,6 +192,9 @@ class _QuotesScreenState extends State<QuotesScreen> {
   @override
   void dispose() {
     _quotesBloc.close();
+    _scrollController
+      ..removeListener(_onScroll)
+      ..dispose();
     super.dispose();
   }
 }
