@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
@@ -11,43 +13,44 @@ part 'quotes_state.dart';
 
 class QuotesBloc extends Bloc<QuotesEvent, QuotesState> {
   List<Results> quotes = [];
+  static List<Results>? AllQuote = [];
+
   QuotesBloc() : super(QuotesInitialState()) {
     on<QuotesEvent>((event, emit) async {
       if (event is FetchQuotesEvent) {
-        if (event.last == 20) return;
-        emit(QuotesInitialState());
+        if (event.page == 20) return;
+        if (event.page == 1) {
+          // Clear the AllQuote list when fetching the first page.
+          AllQuote = [];
+        }
+        emit(QuotesLoadingState());
 
         try {
-          List<Results>? quotes =
-              await ApiServies.getAllQuotesFromPages(event.start!, event.last!);
+          List<Results>? newQuotes = await ApiServies.getAllQuote(event.page!);
           List<Tag> listTag = await ApiServies.getAllTag();
-          if (quotes.isNotEmpty && event.last != 20) {
-            print(1);
-            print(event.start!);
-            print(event.last!);
-            emit(QuotesLoadedState(quotes, listTag));
-          } else if (quotes.isEmpty) {
-            print(2);
+
+          if (newQuotes!.isNotEmpty) {
+            print('${event.page} start');
+            AllQuote!.addAll(newQuotes);
+            print(AllQuote!.length);
+            var uniqueQuotes = AllQuote!.toSet().toList();
+            print(uniqueQuotes.length);
+
+            emit(QuotesLoadedState(uniqueQuotes, listTag));
           } else {
-            print('3');
             emit(QuotesErrorState());
           }
         } catch (e) {
-          print(3);
           emit(QuotesErrorState());
         }
-      }
-      if (event is FetchQuotesRandomeEvent) {
-        emit(QuotesInitialState());
+      } else if (event is FetchQuotesRandomeEvent) {
+        emit(QuotesLoadingState());
+
         try {
-          Results? results = await ApiServies.getRandomQuote();
+          Results? result = await ApiServies.getRandomQuote();
 
-          if (quotes.isNotEmpty) {
-            quotes.removeAt(0);
-          }
-          quotes.add(results);
-
-          if (quotes.isNotEmpty) {
+          if (result != null) {
+            quotes.add(result);
             emit(QuotesLoadedRandomeState(quotes));
           } else {
             emit(QuotesErrorState());

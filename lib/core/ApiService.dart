@@ -23,21 +23,21 @@ class ApiServies {
     return data;
   }
 
-  static Future<List<Results>> getAllQuotesFromPages(
-      int startPage, int endPage) async {
-    List<Results> allQuotes = [];
+  // static Future<List<Results>> getAllQuotesFromPages(
+  //     int startPage, int endPage) async {
+  //   List<Results> allQuotes = [];
 
-    for (int i = startPage; i <= endPage; i++) {
-      List<Results>? quotes = await getAllQuote(i);
-      if (quotes != null) {
-        allQuotes.addAll(quotes);
-      }
-    }
-    // storeQuotesInSharedPreferences(allQuotes);
-    data = allQuotes;
+  //   for (int i = startPage; i <= endPage; i++) {
+  //     List<Results>? quotes = await getAllQuote(i);
+  //     if (quotes != null) {
+  //       allQuotes.addAll(quotes);
+  //     }
+  //   }
+  //   // storeQuotesInSharedPreferences(allQuotes);
+  //   data = allQuotes;
 
-    return allQuotes;
-  }
+  //   return allQuotes;
+  // }
 
   static Future<void> storeQuotesInSharedPreferences(
       List<Results>? quotes) async {

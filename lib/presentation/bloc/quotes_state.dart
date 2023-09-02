@@ -9,6 +9,11 @@ class QuotesInitialState extends QuotesState {
   
   List<Object?> get props => [];
 }
+class QuotesLoadingState extends QuotesState {
+  @override
+  
+  List<Object?> get props => [];
+}
 
 class QuotesLoadedState extends QuotesState {
   final List<Results> quotes;

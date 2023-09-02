@@ -4,10 +4,10 @@ part of 'quotes_bloc.dart';
 abstract class QuotesEvent extends Equatable {}
 
 class FetchQuotesEvent extends QuotesEvent {
-  final int? start,last;
+  final int? page;
 
-  FetchQuotesEvent( {required this.start,required this.last});
-  
+  FetchQuotesEvent({required this.page,});
+
   @override
   List<Object?> get props => [];
 }
