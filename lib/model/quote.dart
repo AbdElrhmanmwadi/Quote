@@ -52,7 +52,6 @@ class Results {
   String? dateAdded;
   String? dateModified;
 
-
   Results(
       {this.sId,
       this.author,

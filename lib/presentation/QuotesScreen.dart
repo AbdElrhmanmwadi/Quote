@@ -85,22 +85,22 @@ class _QuotesScreenState extends State<QuotesScreen> {
         automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
         elevation: 0,
-       // actions: [
-          // IconButton(
-          //     icon: Icon(
-          //       _isFavorite ? Icons.favorite : Icons.favorite_border,
-          //       color: Colors.red,
-          //     ),
-          //     onPressed: _toggleFavorite),
-          // IconButton(
-          //     icon: Icon(
-          //       Icons.share,
-          //       color: Colors.grey[700],
-          //     ),
-          //     onPressed: () async {
-          //       QuoteController.shareQuote(lists, _currentIndex);
-          //     }),
-       // ],
+        // actions: [
+        // IconButton(
+        //     icon: Icon(
+        //       _isFavorite ? Icons.favorite : Icons.favorite_border,
+        //       color: Colors.red,
+        //     ),
+        //     onPressed: _toggleFavorite),
+        // IconButton(
+        //     icon: Icon(
+        //       Icons.share,
+        //       color: Colors.grey[700],
+        //     ),
+        //     onPressed: () async {
+        //       QuoteController.shareQuote(lists, _currentIndex);
+        //     }),
+        // ],
         title: Text.rich(
           TextSpan(
               text: ';;',
@@ -131,7 +131,9 @@ class _QuotesScreenState extends State<QuotesScreen> {
                   child: SizedBox(
                     height: 30,
                     width: 30,
-                    child: CircularProgressIndicator(),
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation(Colors.red),
+                    ),
                   ),
                 ),
               );
@@ -154,7 +156,9 @@ class _QuotesScreenState extends State<QuotesScreen> {
                             child: SizedBox(
                               height: 30,
                               width: 30,
-                              child: CircularProgressIndicator(),
+                              child: CircularProgressIndicator(
+                                  valueColor:
+                                      AlwaysStoppedAnimation(Colors.red)),
                             ),
                           ),
                         )
@@ -170,7 +174,6 @@ class _QuotesScreenState extends State<QuotesScreen> {
                 child: Text(state.errorMessage),
               );
           }
-
         },
       ),
     );

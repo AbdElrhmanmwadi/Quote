@@ -107,13 +107,24 @@ class _QuotesRandomScreenState extends State<QuotesRandomScreen> {
                 );
               } else {
                 return const Center(
-                  child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation(Colors.red),
-                  ),
+                  child: ProgressIndicator(),
                 );
               }
             },
           ),
         ));
+  }
+}
+
+class ProgressIndicator extends StatelessWidget {
+  const ProgressIndicator({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return const CircularProgressIndicator(
+      valueColor: AlwaysStoppedAnimation(Colors.red),
+    );
   }
 }
