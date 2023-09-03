@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quote/core/SharedPreferences.dart';
+import 'package:quote/helper/my_bloc_Observer.dart';
 import 'package:quote/presentation/QuotesScreen.dart';
 import 'package:quote/presentation/bloc/quote_bloc.dart';
-import 'package:quote/presentation/bloc/quotes_bloc.dart';
 
 void main() async {
+   Bloc.observer = MyBlocObserver();
   WidgetsFlutterBinding.ensureInitialized();
 
   await SharedPrefController.initialize();

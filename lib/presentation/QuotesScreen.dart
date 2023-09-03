@@ -8,7 +8,6 @@ import 'package:quote/domain/quote.dart';
 import 'package:quote/domain/tag.dart';
 import 'package:quote/presentation/QutesRandomScreen.dart';
 import 'package:quote/presentation/bloc/quote_bloc.dart';
-import 'package:quote/presentation/bloc/quotes_bloc.dart';
 import 'package:quote/presentation/widget/QuoteController.dart';
 import 'package:quote/presentation/widget/quoteWidget.dart';
 
@@ -44,19 +43,29 @@ class _QuotesScreenState extends State<QuotesScreen> {
 
   @override
   void initState() {
-    super.initState();
+    _scrollController.addListener(_onScroll);
+
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await QuoteController.checkAndShowQuote(context);
     });
-
-    _scrollController.addListener(_onScroll);
+    super.initState();
   }
 
+  bool isFetching = false;
+
   void _onScroll() {
+    if (isFetching) return;
+
     final maxScroll = _scrollController.position.maxScrollExtent;
     final currentScroll = _scrollController.offset;
+
     if (currentScroll >= (maxScroll * 0.9)) {
+      isFetching = true;
       context.read<QuoteBloc>().add(GetPostsEvent());
+
+      Future.delayed(Duration(seconds: 1), () {
+        isFetching = false;
+      });
     }
   }
 
@@ -150,7 +159,7 @@ class _QuotesScreenState extends State<QuotesScreen> {
                           ),
                         )
                       : QuoteWidget(
-                          currentIndex: index + 1,
+                          currentIndex: index ,
                           lists: state.quotes,
                           index: index,
                         );

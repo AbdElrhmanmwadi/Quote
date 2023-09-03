@@ -1,11 +1,4 @@
-
-
-
-
-
 part of 'quote_bloc.dart';
-
-
 
 enum QouteStatus { loading, success, error }
 
@@ -41,5 +34,25 @@ class QuotessState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [status, quotes, page, hasReachedMax, errorMessage];
+  List<Object?> get props =>
+      [status, quotes, page, hasReachedMax, errorMessage];
+}
+
+class QuotesLoadedRandomeeState extends QuotessState {
+  final List<Results> quotess;
+
+  const QuotesLoadedRandomeeState(this.quotess);
+
+  @override
+  List<Object?> get props => [quotess];
+}
+
+class QuotesLoadinggState extends QuotessState {
+  @override
+  List<Object?> get props => [];
+}
+
+class QuotesErrorrState extends QuotessState {
+  @override
+  List<Object?> get props => [];
 }

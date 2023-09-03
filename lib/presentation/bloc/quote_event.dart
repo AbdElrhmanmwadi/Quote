@@ -15,3 +15,7 @@ class GetPostsEvent extends QuoteEvent{
   List<Object> get props => [];
 
 }
+class FetchQuotessRandomeEvent extends QuoteEvent {
+   @override
+  List<Object> get props => [];
+}

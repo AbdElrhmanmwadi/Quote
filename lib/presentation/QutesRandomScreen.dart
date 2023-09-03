@@ -3,9 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:quote/domain/quote.dart';
 
-import 'package:quote/presentation/bloc/quotes_bloc.dart';
 import 'package:quote/presentation/widget/QuoteController.dart';
 import 'package:quote/presentation/widget/quoteWidget.dart';
+
+import 'bloc/quote_bloc.dart';
 
 class QuotesRandomScreen extends StatefulWidget {
   @override
@@ -18,13 +19,13 @@ class _QuotesRandomScreenState extends State<QuotesRandomScreen> {
 
   List<Results> lists = [];
   Results? results;
-  late QuotesBloc _quotesBloc;
+  late QuoteBloc _quotesBloc;
 
   @override
   void initState() {
     super.initState();
-    _quotesBloc = QuotesBloc();
-    _quotesBloc.add(FetchQuotesRandomeEvent());
+    _quotesBloc = QuoteBloc();
+    _quotesBloc.add(FetchQuotessRandomeEvent());
   }
 
   @override
@@ -35,7 +36,7 @@ class _QuotesRandomScreenState extends State<QuotesRandomScreen> {
           floatingActionButton: FloatingActionButton(
             backgroundColor: Colors.red,
             onPressed: () async {
-              _quotesBloc.add(FetchQuotesRandomeEvent());
+              _quotesBloc.add(FetchQuotessRandomeEvent());
             },
             child: Icon(Icons.crisis_alert_outlined),
           ),
@@ -74,10 +75,11 @@ class _QuotesRandomScreenState extends State<QuotesRandomScreen> {
                   ]),
             ),
           ),
-          body: BlocBuilder<QuotesBloc, QuotesState>(
+          body: BlocBuilder<QuoteBloc, QuotessState>(
             builder: (context, state) {
-              if (state is QuotesLoadedRandomeState) {
-                lists = state.quotes;
+              if (state is QuotesLoadedRandomeeState) {
+                lists = state.quotess;
+                print('$lists خخخخخخخخخخخخخخخخخخخخخخخ');
 
                 return Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -99,7 +101,7 @@ class _QuotesRandomScreenState extends State<QuotesRandomScreen> {
                     ),
                   ],
                 );
-              } else if (state is QuotesErrorState) {
+              } else if (state is QuotesErrorrState) {
                 return const Center(
                   child: Text('Failed to fetch quotes.'),
                 );

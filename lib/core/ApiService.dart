@@ -76,7 +76,7 @@ class ApiServies {
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
       resultsQuote = Results.fromJson(jsonData);
-      print(resultsQuote);
+      print('${resultsQuote} oooooooooooooooooooooooooo');
 
       return resultsQuote;
     }
