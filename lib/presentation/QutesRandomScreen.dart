@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:quote/domain/quote.dart';
+import 'package:quote/model/quote.dart';
 
 import 'package:quote/presentation/widget/QuoteController.dart';
 import 'package:quote/presentation/widget/quoteWidget.dart';

@@ -4,8 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quote/core/ApiService.dart';
 import 'package:quote/core/SharedPreferences.dart';
 
-import 'package:quote/domain/quote.dart';
-import 'package:quote/domain/tag.dart';
+import 'package:quote/model/quote.dart';
+import 'package:quote/model/tag.dart';
 import 'package:quote/presentation/QutesRandomScreen.dart';
 import 'package:quote/presentation/bloc/quote_bloc.dart';
 import 'package:quote/presentation/widget/QuoteController.dart';

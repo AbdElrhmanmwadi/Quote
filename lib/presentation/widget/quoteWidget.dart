@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:quote/core/SharedPreferences.dart';
 import 'package:quote/core/fontStyle.dart';
-import 'package:quote/domain/quote.dart';
+import 'package:quote/model/quote.dart';
 import 'package:quote/presentation/widget/QuoteController.dart';
 
 class QuoteWidget extends StatefulWidget {

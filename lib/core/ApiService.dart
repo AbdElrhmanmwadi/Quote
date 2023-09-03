@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:quote/core/SharedPreferences.dart';
-import 'package:quote/domain/quote.dart';
-import 'package:quote/domain/tag.dart';
+import 'package:quote/model/quote.dart';
+import 'package:quote/model/tag.dart';
 
 class ApiServies {
   static List<Results>? data = [];

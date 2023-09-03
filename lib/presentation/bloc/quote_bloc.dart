@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../core/ApiService.dart';
-import '../../domain/quote.dart';
+import '../../model/quote.dart';
 
 part 'quote_event.dart';
 part 'quote_state.dart';
