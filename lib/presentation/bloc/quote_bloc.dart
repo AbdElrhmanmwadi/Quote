@@ -65,11 +65,11 @@ class QuoteBloc extends Bloc<QuoteEvent, QuotessState> {
 
           try {
             Results? result = await ApiServies.getRandomQuote();
-
-            if (result != null) {
-              quotes.add(result);
-              print(quotes.length);
-              print(result.author);
+            if (quotes.isNotEmpty) {
+              quotes.removeAt(0);
+            }
+            quotes.add(result);
+            if (quotes.isNotEmpty) {
               emit(QuotesLoadedRandomeeState(quotes));
             } else {
               emit(QuotesErrorrState());
