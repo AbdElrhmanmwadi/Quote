@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:quote/core/SharedPreferences.dart';
 import 'package:quote/model/quote.dart';
+import 'package:quote/model/search.dart';
+import 'package:quote/model/search.dart';
 import 'package:quote/model/tag.dart';
 
 class ApiServies {
@@ -94,5 +96,18 @@ class ApiServies {
       return tags;
     }
     return tags;
+  }
+
+  static Future<List<Results>?> searchs(searchh) async {
+    List<Results>? listSerarh = [];
+    Uri url = Uri.parse('https://api.quotable.io/search/quotes?query=$searchh');
+    http.Response response = await http.get(url);
+    if (response.statusCode == 200) {
+      final jsonSearch = json.decode(response.body);
+      listSerarh = search.fromJson(jsonSearch).results;
+      print('pppppppppppppppppppp');
+      print('${listSerarh!}');
+    }
+    return listSerarh;
   }
 }

@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:quote/core/ApiService.dart';
-import 'package:quote/core/SharedPreferences.dart';
-
 import 'package:quote/model/quote.dart';
-import 'package:quote/model/tag.dart';
 import 'package:quote/presentation/QutesRandomScreen.dart';
 import 'package:quote/presentation/bloc/quote_bloc.dart';
 import 'package:quote/presentation/widget/QuoteController.dart';
+import 'package:quote/presentation/widget/SearchTextForm.dart';
 import 'package:quote/presentation/widget/quoteWidget.dart';
 
 class QuotesScreen extends StatefulWidget {
@@ -16,30 +14,12 @@ class QuotesScreen extends StatefulWidget {
   _QuotesScreenState createState() => _QuotesScreenState();
 }
 
-int _currentIndex = 0;
-bool _isFavorite = false;
-List<Results>? lists;
-List<Tag>? listTage;
-Results? resuilt;
-
 class _QuotesScreenState extends State<QuotesScreen> {
   final ScrollController _scrollController = ScrollController();
-
-  // Future<void> _loadFavoriteQuoteStatus() async {
-  //   setState(() {
-  //     _isFavorite =
-  //         SharedPrefController().getData(key: _currentIndex.toString());
-  //   });
-  // }
-
-  // void _toggleFavorite() async {
-  //   setState(() {
-  //     _isFavorite = !_isFavorite;
-  //     SharedPrefController().setData(_currentIndex.toString(), _isFavorite);
-  //   });
-  // }
+  final TextEditingController _searchController = TextEditingController();
 
   int page = 2;
+  bool isFetching = false;
 
   @override
   void initState() {
@@ -48,10 +28,10 @@ class _QuotesScreenState extends State<QuotesScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await QuoteController.checkAndShowQuote(context);
     });
+
+    ApiServies.searchs('home');
     super.initState();
   }
-
-  bool isFetching = false;
 
   void _onScroll() {
     if (isFetching) return;
@@ -85,40 +65,27 @@ class _QuotesScreenState extends State<QuotesScreen> {
         automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
         elevation: 0,
-        // actions: [
-        // IconButton(
-        //     icon: Icon(
-        //       _isFavorite ? Icons.favorite : Icons.favorite_border,
-        //       color: Colors.red,
-        //     ),
-        //     onPressed: _toggleFavorite),
-        // IconButton(
-        //     icon: Icon(
-        //       Icons.share,
-        //       color: Colors.grey[700],
-        //     ),
-        //     onPressed: () async {
-        //       QuoteController.shareQuote(lists, _currentIndex);
-        //     }),
-        // ],
         title: Text.rich(
           TextSpan(
-              text: ';;',
-              style: const TextStyle(
+            text: ';;',
+            style: const TextStyle(
+              fontFamily: 'Cormorant',
+              fontWeight: FontWeight.w900,
+              fontSize: 30,
+              color: Colors.red,
+            ),
+            children: [
+              TextSpan(
+                text: '  Quote',
+                style: TextStyle(
+                  fontSize: 25,
                   fontFamily: 'Cormorant',
                   fontWeight: FontWeight.w900,
-                  fontSize: 30,
-                  color: Colors.red),
-              children: [
-                TextSpan(
-                  text: '  Quote',
-                  style: TextStyle(
-                      fontSize: 25,
-                      fontFamily: 'Cormorant',
-                      fontWeight: FontWeight.w900,
-                      color: Colors.grey[700]),
-                )
-              ]),
+                  color: Colors.grey[700],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
       body: BlocBuilder<QuoteBloc, QuotessState>(
@@ -143,31 +110,50 @@ class _QuotesScreenState extends State<QuotesScreen> {
                   child: Text("No Posts"),
                 );
               }
-              return ListView.builder(
-                controller: _scrollController,
-                itemCount: state.hasReachedMax
-                    ? state.quotes.length
-                    : state.quotes.length + 1,
-                itemBuilder: (BuildContext context, int index) {
-                  return index >= state.quotes.length
-                      ? const Center(
-                          child: Padding(
-                            padding: EdgeInsets.all(4.0),
-                            child: SizedBox(
-                              height: 30,
-                              width: 30,
-                              child: CircularProgressIndicator(
-                                  valueColor:
-                                      AlwaysStoppedAnimation(Colors.red)),
-                            ),
-                          ),
-                        )
-                      : QuoteWidget(
-                          currentIndex: index,
-                          lists: state.quotes,
-                          index: index,
-                        );
-                },
+              return Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SearchTextFormField(
+                      controller: _searchController,
+                      onChanged: (value) async {
+                        await ApiServies.searchs(value);
+                      },
+                      icon: Icons.search,
+                      hintText: 'hintText',
+                    ),
+                  ),
+                  Expanded(
+                    child: ListView.builder(
+                      physics: const BouncingScrollPhysics(),
+                      controller: _scrollController,
+                      itemCount: state.hasReachedMax
+                          ? state.quotes.length
+                          : state.quotes.length + 1,
+                      itemBuilder: (BuildContext context, int index) {
+                        return index >= state.quotes.length
+                            ? const Center(
+                                child: Padding(
+                                  padding: EdgeInsets.all(4.0),
+                                  child: SizedBox(
+                                    height: 30,
+                                    width: 30,
+                                    child: CircularProgressIndicator(
+                                      valueColor:
+                                          AlwaysStoppedAnimation(Colors.red),
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : QuoteWidget(
+                                currentIndex: index,
+                                lists: state.quotes,
+                                index: index,
+                              );
+                      },
+                    ),
+                  ),
+                ],
               );
             case QouteStatus.error:
               return Center(

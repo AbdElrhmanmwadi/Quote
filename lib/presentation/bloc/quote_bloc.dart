@@ -21,7 +21,6 @@ class QuoteBloc extends Bloc<QuoteEvent, QuotessState> {
               final List<Results>? quotes =
                   await ApiServies.getAllQuote(state.page);
 
-              print(1);
               return quotes == null || quotes.isEmpty
                   ? emit(state.copyWith(
                       status: QouteStatus.success, hasReachedMax: true))
@@ -30,22 +29,12 @@ class QuoteBloc extends Bloc<QuoteEvent, QuotessState> {
                       quotes: quotes,
                       hasReachedMax: false));
             } else {
-              print(2);
               final List<Results>? quotes =
                   await ApiServies.getAllQuote(state.page + 1);
-              print('${state.page} page');
-              print('${quotes?.length} qoute');
 
               if (quotes == null || quotes.isEmpty || state.page == 20) {
                 emit(state.copyWith(hasReachedMax: true));
               } else {
-                print('${state.page} ooooo');
-                print(3);
-                print('${state.page} page');
-                print('${state.quotes.length} allquotes');
-                print('${state.quotes.toSet().length} خخخخخخخخخخخخخخخخ');
-                print('${quotes.length} qoute');
-
                 emit(state.copyWith(
                   status: QouteStatus.success,
                   quotes: List.of(state.quotes)..addAll(quotes),
