@@ -65,6 +65,7 @@ class CustomSearchDelegate extends SearchDelegate {
             itemCount: snapshot.data!.length,
             itemBuilder: (context, index) {
               return QuoteWidget(
+                id: snapshot.data![index].sId!,
                 currentIndex: index,
                 lists: snapshot.data,
                 index: index,

@@ -38,7 +38,7 @@ class _QuotesRandomScreenState extends State<QuotesRandomScreen> {
             onPressed: () async {
               _quotesBloc.add(FetchQuotessRandomeEvent());
             },
-            child: Icon(Icons.crisis_alert_outlined),
+            child: const Icon(Icons.crisis_alert_outlined),
           ),
           appBar: AppBar(
             automaticallyImplyLeading: false,
@@ -58,7 +58,7 @@ class _QuotesRandomScreenState extends State<QuotesRandomScreen> {
             title: Text.rich(
               TextSpan(
                   text: ';;',
-                  style: TextStyle(
+                  style: const TextStyle(
                       fontFamily: 'Cormorant',
                       fontWeight: FontWeight.w900,
                       fontSize: 30,
@@ -79,7 +79,6 @@ class _QuotesRandomScreenState extends State<QuotesRandomScreen> {
             builder: (context, state) {
               if (state is QuotesLoadedRandomeeState) {
                 lists = state.quotess;
-                print('$lists خخخخخخخخخخخخخخخخخخخخخخخ');
 
                 return Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -92,6 +91,7 @@ class _QuotesRandomScreenState extends State<QuotesRandomScreen> {
                         onPageChanged: (index) {},
                         itemBuilder: (context, index) {
                           return QuoteWidget(
+                            id: lists[index].sId!,
                             currentIndex: _currentIndex,
                             lists: lists,
                             index: index,

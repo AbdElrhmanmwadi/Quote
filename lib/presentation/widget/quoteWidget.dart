@@ -10,11 +10,13 @@ class QuoteWidget extends StatefulWidget {
     required int currentIndex,
     required this.lists,
     required this.index,
+    required this.id,
   }) : _currentIndex = currentIndex;
 
   final int _currentIndex;
   final List<Results>? lists;
   final int index;
+  final String id;
 
   @override
   State<QuoteWidget> createState() => _QuoteWidgetState();
@@ -25,16 +27,14 @@ class _QuoteWidgetState extends State<QuoteWidget> {
 
   Future<void> _loadFavoriteQuoteStatus() async {
     setState(() {
-      _isFavorite =
-          SharedPrefController().getData(key: widget._currentIndex.toString());
+      _isFavorite = SharedPrefController().getData(key: widget.id);
     });
   }
 
   void _toggleFavorite() async {
     setState(() {
       _isFavorite = !_isFavorite;
-      SharedPrefController()
-          .setData(widget._currentIndex.toString(), _isFavorite);
+      SharedPrefController().setData(widget.id, _isFavorite);
     });
   }
 

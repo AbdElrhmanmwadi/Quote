@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:quote/core/ApiService.dart';
-import 'package:quote/model/quote.dart';
 import 'package:quote/presentation/QutesRandomScreen.dart';
 import 'package:quote/presentation/bloc/quote_bloc.dart';
 import 'package:quote/presentation/widget/QuoteController.dart';
@@ -43,7 +42,7 @@ class _QuotesScreenState extends State<QuotesScreen> {
       isFetching = true;
       context.read<QuoteBloc>().add(GetPostsEvent());
 
-      Future.delayed(Duration(seconds: 1), () {
+      Future.delayed(const Duration(seconds: 1), () {
         isFetching = false;
       });
     }
@@ -146,6 +145,7 @@ class _QuotesScreenState extends State<QuotesScreen> {
                                 ),
                               )
                             : QuoteWidget(
+                                id: state.quotes[index].sId!,
                                 currentIndex: index,
                                 lists: state.quotes,
                                 index: index,

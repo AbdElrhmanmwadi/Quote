@@ -17,7 +17,7 @@ class SearchTextFormField extends StatelessWidget {
       onChanged: onChanged,
       controller: controller,
       decoration: InputDecoration(
-        contentPadding:const EdgeInsets.symmetric(vertical: 0),
+        contentPadding: const EdgeInsets.symmetric(vertical: 0),
         hintText: hintText,
         hintStyle: TextStyle(
           fontSize: 15,
