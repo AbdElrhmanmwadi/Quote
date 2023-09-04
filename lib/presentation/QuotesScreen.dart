@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quote/core/ApiService.dart';
 import 'package:quote/presentation/QutesRandomScreen.dart';
 import 'package:quote/presentation/bloc/quote_bloc.dart';
+import 'package:quote/presentation/widget/CustomSearchDelegate.dart';
 import 'package:quote/presentation/widget/QuoteController.dart';
 import 'package:quote/presentation/widget/SearchTextForm.dart';
 import 'package:quote/presentation/widget/quoteWidget.dart';
@@ -117,6 +118,16 @@ class _QuotesScreenState extends State<QuotesScreen> {
                       controller: _searchController,
                       onChanged: (value) async {
                         await ApiServies.searchs(value);
+                      },
+                      onFieldSubmitted: (value) async {
+                        await ApiServies.searchs(value);
+                        showSearch(
+                          query: '${value}',
+                          context: context,
+                          delegate: CustomSearchDelegate(
+                            await ApiServies.searchs('${value}'),
+                          ),
+                        );
                       },
                       icon: Icons.search,
                       hintText: 'hintText',
