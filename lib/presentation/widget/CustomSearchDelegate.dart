@@ -5,12 +5,7 @@ import 'package:quote/presentation/widget/quoteWidget.dart';
 
 class CustomSearchDelegate extends SearchDelegate {
   List<Results>? searchTerms = [];
-  CustomSearchDelegate(api) {
-    searchTerms = api;
-
-   
-  }
-
+  
   // first overwrite to
   // clear the search text
   @override

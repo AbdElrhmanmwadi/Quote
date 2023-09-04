@@ -62,6 +62,20 @@ class _QuotesScreenState extends State<QuotesScreen> {
         child: const Icon(Icons.crisis_alert_outlined),
       ),
       appBar: AppBar(
+        actions: [
+          IconButton(
+            onPressed: () async {
+              showSearch(
+                context: context,
+                delegate: CustomSearchDelegate(),
+              );
+            },
+            icon: Icon(
+              Icons.search,
+              color: Colors.red,
+            ),
+          ),
+        ],
         automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
         elevation: 0,
@@ -112,27 +126,6 @@ class _QuotesScreenState extends State<QuotesScreen> {
               }
               return Column(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: SearchTextFormField(
-                      controller: _searchController,
-                      onChanged: (value) async {
-                        await ApiServies.searchs(value);
-                      },
-                      onFieldSubmitted: (value) async {
-                        await ApiServies.searchs(value);
-                        showSearch(
-                          query: '${value}',
-                          context: context,
-                          delegate: CustomSearchDelegate(
-                            await ApiServies.searchs('${value}'),
-                          ),
-                        );
-                      },
-                      icon: Icons.search,
-                      hintText: 'hintText',
-                    ),
-                  ),
                   Expanded(
                     child: ListView.builder(
                       physics: const BouncingScrollPhysics(),
