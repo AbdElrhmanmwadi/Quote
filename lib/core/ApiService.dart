@@ -25,6 +25,22 @@ class ApiServies {
     return data;
   }
 
+  static Future<List<Results>?> getQuoteByTag(tag) async {
+    List<Results>? listResults;
+    Uri url = Uri.parse(
+        'https://api.quotable.io/quotes?tags=$tag');
+    http.Response response = await http.get(url);
+    if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body);
+      listResults = quote.fromJson(jsonData).results;
+      data = listResults;
+
+      return data;
+    }
+
+    return data;
+  }
+
   // static Future<List<Results>> getAllQuotesFromPages(
   //     int startPage, int endPage) async {
   //   List<Results> allQuotes = [];
