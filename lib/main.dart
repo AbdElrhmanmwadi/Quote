@@ -4,6 +4,7 @@ import 'package:quote/core/SharedPreferences.dart';
 import 'package:quote/helper/my_bloc_Observer.dart';
 import 'package:quote/presentation/QuotesScreen.dart';
 import 'package:quote/presentation/bloc/quote_bloc.dart';
+import 'package:quote/presentation/tagScreen.dart';
 
 void main() async {
    Bloc.observer = MyBlocObserver();
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Inspirational Quotes App',
-        home: QuotesScreen(),
+        home: TagScreen(),
       ),
     );
   }

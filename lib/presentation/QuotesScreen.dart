@@ -150,7 +150,7 @@ class _QuotesScreenState extends State<QuotesScreen> {
                               )
                             : QuoteWidget(
                                 id: state.quotes[index].sId!,
-                                currentIndex: index,
+                                currentIndex: index + 2,
                                 lists: state.quotes,
                                 index: index,
                               );

@@ -9,6 +9,7 @@ import 'package:quote/model/tag.dart';
 
 class ApiServies {
   static List<Results>? data = [];
+  static List<Results>? quoteByTag = [];
   static List<Tag> tags = [];
   static Future<List<Results>?> getAllQuote(index) async {
     List<Results>? listResults;
@@ -26,19 +27,19 @@ class ApiServies {
   }
 
   static Future<List<Results>?> getQuoteByTag(tag) async {
-    List<Results>? listResults;
-    Uri url = Uri.parse(
-        'https://api.quotable.io/quotes?tags=$tag');
+    List<Results>? listResults = [];
+    Uri url = Uri.parse('https://api.quotable.io/quotes?tags=$tag');
     http.Response response = await http.get(url);
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
       listResults = quote.fromJson(jsonData).results;
-      data = listResults;
+      quoteByTag!.addAll(listResults!);
 
-      return data;
+      print(quoteByTag!.length);
+      return quoteByTag;
     }
 
-    return data;
+    return quoteByTag;
   }
 
   // static Future<List<Results>> getAllQuotesFromPages(
