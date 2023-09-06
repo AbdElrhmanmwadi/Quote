@@ -4,7 +4,6 @@ import 'package:http/http.dart' as http;
 import 'package:quote/core/SharedPreferences.dart';
 import 'package:quote/model/quote.dart';
 import 'package:quote/model/search.dart';
-import 'package:quote/model/search.dart';
 import 'package:quote/model/tag.dart';
 
 class ApiServies {
@@ -35,7 +34,6 @@ class ApiServies {
       listResults = quote.fromJson(jsonData).results;
       quoteByTag!.addAll(listResults!);
 
-      print(quoteByTag!.length);
       return quoteByTag;
     }
 
@@ -60,7 +58,6 @@ class ApiServies {
 
   static Future<void> storeQuotesInSharedPreferences(
       List<Results>? quotes) async {
-    print(11111111111);
     if (quotes != null) {
       final quotesJson = jsonEncode(quotes);
 

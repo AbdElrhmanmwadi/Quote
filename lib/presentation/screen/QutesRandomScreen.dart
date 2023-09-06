@@ -6,7 +6,7 @@ import 'package:quote/model/quote.dart';
 import 'package:quote/presentation/widget/QuoteController.dart';
 import 'package:quote/presentation/widget/quoteWidget.dart';
 
-import 'bloc/quote_bloc.dart';
+import '../bloc/quote_bloc.dart';
 
 class QuotesRandomScreen extends StatefulWidget {
   @override
@@ -43,7 +43,7 @@ class _QuotesRandomScreenState extends State<QuotesRandomScreen> {
               _quotesBloc.add(FetchQuotessRandomeEvent());
             },
             child: AnimatedRotation(
-              duration: Duration(milliseconds: 300),
+              duration:const Duration(milliseconds: 300),
               turns: _rotateIcon == true ? 180 * (3.14159265359 / 180) : 0,
               child: const Icon(Icons.crisis_alert_outlined),
             ),

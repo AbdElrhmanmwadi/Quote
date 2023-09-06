@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:quote/core/ApiService.dart';
-import 'package:quote/presentation/widget/CustomSearchDelegate.dart';
 
 class SearchTextFormField extends StatelessWidget {
-  final icon, hintText, controller, onChanged, onFieldSubmitted;
+  final IconData icon;
+  final String hintText;
+  final TextEditingController controller;
+  final void Function(String)? onChanged;
+  final void Function(String)? onFieldSubmitted;
   const SearchTextFormField({
+    super.key,
     required this.icon,
     required this.hintText,
     required this.controller,

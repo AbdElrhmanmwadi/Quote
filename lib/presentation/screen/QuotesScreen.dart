@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:quote/core/ApiService.dart';
-import 'package:quote/presentation/QutesRandomScreen.dart';
+import 'package:quote/presentation/screen/QutesRandomScreen.dart';
 import 'package:quote/presentation/bloc/quote_bloc.dart';
 import 'package:quote/presentation/widget/CustomSearchDelegate.dart';
 import 'package:quote/presentation/widget/QuoteController.dart';
-import 'package:quote/presentation/widget/SearchTextForm.dart';
 import 'package:quote/presentation/widget/quoteWidget.dart';
 
 class QuotesScreen extends StatefulWidget {
@@ -16,7 +15,6 @@ class QuotesScreen extends StatefulWidget {
 
 class _QuotesScreenState extends State<QuotesScreen> {
   final ScrollController _scrollController = ScrollController();
-  final TextEditingController _searchController = TextEditingController();
 
   int page = 2;
   bool isFetching = false;
@@ -70,7 +68,7 @@ class _QuotesScreenState extends State<QuotesScreen> {
                 delegate: CustomSearchDelegate(),
               );
             },
-            icon: Icon(
+            icon:const Icon(
               Icons.search,
               color: Colors.red,
             ),
