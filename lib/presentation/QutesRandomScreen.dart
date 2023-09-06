@@ -28,6 +28,7 @@ class _QuotesRandomScreenState extends State<QuotesRandomScreen> {
     _quotesBloc.add(FetchQuotessRandomeEvent());
   }
 
+  bool _rotateIcon = false;
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -36,9 +37,16 @@ class _QuotesRandomScreenState extends State<QuotesRandomScreen> {
           floatingActionButton: FloatingActionButton(
             backgroundColor: Colors.red,
             onPressed: () async {
+              setState(() {
+                _rotateIcon = !_rotateIcon;
+              });
               _quotesBloc.add(FetchQuotessRandomeEvent());
             },
-            child: const Icon(Icons.crisis_alert_outlined),
+            child: AnimatedRotation(
+              duration: Duration(milliseconds: 300),
+              turns: _rotateIcon == true ? 180 * (3.14159265359 / 180) : 0,
+              child: const Icon(Icons.crisis_alert_outlined),
+            ),
           ),
           appBar: AppBar(
             automaticallyImplyLeading: false,
