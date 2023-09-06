@@ -7,7 +7,7 @@ import 'package:quote/presentation/bloc/quote_bloc.dart';
 import 'package:quote/presentation/tagScreen.dart';
 
 void main() async {
-   Bloc.observer = MyBlocObserver();
+  Bloc.observer = MyBlocObserver();
   WidgetsFlutterBinding.ensureInitialized();
 
   await SharedPrefController.initialize();
@@ -22,7 +22,9 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Inspirational Quotes App',
-        home: TagScreen(),
+        home: SharedPrefController().getData(key: 'tag')
+            ? QuotesScreen()
+            : const TagScreen(),
       ),
     );
   }

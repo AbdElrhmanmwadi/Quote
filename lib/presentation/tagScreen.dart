@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:quote/core/ApiService.dart';
+import 'package:quote/core/SharedPreferences.dart';
 import 'package:quote/core/fontStyle.dart';
 import 'package:quote/model/tag.dart';
 import 'package:quote/presentation/QuotesScreen.dart';
@@ -43,6 +44,7 @@ class _TagScreenState extends State<TagScreen> {
       Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => QuotesScreen(),
       ));
+      SharedPrefController().setData('tag', true);
     } else {
       showDialog(
         context: context,
