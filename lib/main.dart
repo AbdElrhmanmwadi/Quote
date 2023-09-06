@@ -20,12 +20,11 @@ class MyApp extends StatelessWidget {
     return BlocProvider(
       create: (context) => QuoteBloc()..add(GetPostsEvent()),
       child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Inspirational Quotes App',
-        home: SharedPrefController().getData(key: 'tag')
-            ? QuotesScreen()
-            : const TagScreen(),
-      ),
+          debugShowCheckedModeBanner: false,
+          title: 'Inspirational Quotes App',
+          home: SharedPrefController().getData(key: 'tag')
+              ? QuotesScreen()
+              : const TagScreen()),
     );
   }
 }

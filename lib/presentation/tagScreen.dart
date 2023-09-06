@@ -120,7 +120,6 @@ class _TagScreenState extends State<TagScreen> {
                   toggleTagSelection(tag);
                   await ApiServies.getQuoteByTag(tag.name);
 
-                  print(ApiServies.quoteByTag);
                 },
                 child: Text('${tag.name}'),
               );

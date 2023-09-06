@@ -68,6 +68,7 @@ class ApiServies {
     }
   }
 
+
   static Future<List<Results>?> getQuotesFromSharedPreferences() async {
     final quotesJson = SharedPrefController().getString(key: 'quotes');
     if (quotesJson != null) {
