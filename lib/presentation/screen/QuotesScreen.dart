@@ -15,6 +15,8 @@ class QuotesScreen extends StatefulWidget {
 
 class _QuotesScreenState extends State<QuotesScreen> {
   final ScrollController _scrollController = ScrollController();
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
+      GlobalKey<RefreshIndicatorState>();
 
   int page = 2;
   bool isFetching = false;
@@ -68,7 +70,7 @@ class _QuotesScreenState extends State<QuotesScreen> {
                 delegate: CustomSearchDelegate(),
               );
             },
-            icon:const Icon(
+            icon: const Icon(
               Icons.search,
               color: Colors.red,
             ),
@@ -158,8 +160,11 @@ class _QuotesScreenState extends State<QuotesScreen> {
                 ],
               );
             case QouteStatus.error:
-              return Center(
-                child: Text(state.errorMessage),
+              return ErrorWidgets(
+                onRetry: () {
+            context.read<QuoteBloc>().add(GetPostsEvent(),);
+          }, 
+                errorMessage: state.errorMessage,
               );
           }
         },
@@ -173,5 +178,43 @@ class _QuotesScreenState extends State<QuotesScreen> {
       ..removeListener(_onScroll)
       ..dispose();
     super.dispose();
+  }
+}
+
+class ErrorWidgets extends StatefulWidget {
+  final errorMessage;
+  final onRetry;
+  const ErrorWidgets({
+    super.key,
+    required this.errorMessage,required this.onRetry,
+  });
+
+  @override
+  State<ErrorWidgets> createState() => _ErrorWidgetsState();
+}
+
+class _ErrorWidgetsState extends State<ErrorWidgets> {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Center(
+          child: Text(widget.errorMessage),
+        ),
+        const SizedBox(
+          height: 100,
+        ),
+        MaterialButton(
+          color: Colors.red,
+          textColor: Colors.white,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
+          child: const Text(
+            'Retry',
+          ),
+          onPressed: widget.onRetry
+        )
+      ],
+    );
   }
 }

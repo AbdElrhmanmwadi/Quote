@@ -46,7 +46,7 @@ class QuoteBloc extends Bloc<QuoteEvent, QuotessState> {
           } catch (e) {
             emit(state.copyWith(
                 status: QouteStatus.error,
-                errorMessage: "Failed to fetch quotes"));
+                errorMessage: "No Internet Connection"));
           }
         }
         if (event is FetchQuotessRandomeEvent) {

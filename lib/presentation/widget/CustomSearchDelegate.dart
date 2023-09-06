@@ -5,7 +5,7 @@ import 'package:quote/presentation/widget/quoteWidget.dart';
 
 class CustomSearchDelegate extends SearchDelegate {
   List<Results>? searchTerms = [];
-  
+
   // first overwrite to
   // clear the search text
   @override
@@ -15,7 +15,7 @@ class CustomSearchDelegate extends SearchDelegate {
         onPressed: () {
           query = '';
         },
-        icon:const Icon(Icons.clear),
+        icon: const Icon(Icons.clear),
       ),
     ];
   }
@@ -26,7 +26,7 @@ class CustomSearchDelegate extends SearchDelegate {
       onPressed: () {
         close(context, null);
       },
-      icon:const Icon(Icons.arrow_back),
+      icon: const Icon(Icons.arrow_back),
     );
   }
 
@@ -37,24 +37,20 @@ class CustomSearchDelegate extends SearchDelegate {
       future: ApiServies.searchs(query),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-        
           return const Center(
             child: CircularProgressIndicator(
               valueColor: AlwaysStoppedAnimation(Colors.red),
             ),
           );
         } else if (snapshot.hasError) {
-         
           return Center(
-            child: Text('Error: ${snapshot.error}'),
+            child: Text('No Internet Connection'),
           );
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-         
           return const Center(
             child: Text('Not Found Any Result'),
           );
         } else {
-          
           return ListView.builder(
             physics: const BouncingScrollPhysics(),
             itemCount: snapshot.data!.length,
@@ -72,7 +68,6 @@ class CustomSearchDelegate extends SearchDelegate {
     );
   }
 
- 
   @override
   Widget buildSuggestions(BuildContext context) {
     return Container();

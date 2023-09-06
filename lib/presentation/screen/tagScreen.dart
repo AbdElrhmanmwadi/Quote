@@ -104,6 +104,7 @@ class _TagScreenState extends State<TagScreen> {
               ))),
       body: SafeArea(
         child: SingleChildScrollView(
+          physics: BouncingScrollPhysics(),
           child: Wrap(
             alignment: WrapAlignment.center,
             crossAxisAlignment: WrapCrossAlignment.center,
@@ -119,7 +120,6 @@ class _TagScreenState extends State<TagScreen> {
                 onPressed: () async {
                   toggleTagSelection(tag);
                   await ApiServies.getQuoteByTag(tag.name);
-
                 },
                 child: Text('${tag.name}'),
               );
