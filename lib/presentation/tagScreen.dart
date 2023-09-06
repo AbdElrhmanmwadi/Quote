@@ -48,14 +48,28 @@ class _TagScreenState extends State<TagScreen> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('Selection Error'),
-            content: Text('Please select 20 tags to proceed.'),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            title: Text(
+              'Selection Error',
+              style: FontStyle.cormorantStyle.copyWith(
+                color: Colors.black,
+              ),
+            ),
+            content: Text(
+              'Please select 20 tags to continue.',
+              style: FontStyle.cormorantStyle
+                  .copyWith(color: Colors.black, fontWeight: FontWeight.w500),
+            ),
             actions: [
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: Text('OK'),
+                child: Text(
+                  'OK',
+                  style: FontStyle.cormorantStyle,
+                ),
               ),
             ],
           );
