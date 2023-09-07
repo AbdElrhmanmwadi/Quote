@@ -11,8 +11,11 @@ class QuoteWidget extends StatefulWidget {
     required this.lists,
     required this.index,
     required this.id,
+    this.highlightedContent,
+    this.IsSearch = false,
   }) : _currentIndex = currentIndex;
-
+  final bool IsSearch;
+  final TextSpan? highlightedContent;
   final int _currentIndex;
   final List<Results>? lists;
   final int index;
@@ -72,12 +75,19 @@ class _QuoteWidgetState extends State<QuoteWidget> {
               ),
               textAlign: TextAlign.end,
             ),
-            SelectableText(
-              widget.lists![widget.index].content!,
-              style: FontStyle.cormorantStyle
-                  .copyWith(fontWeight: FontWeight.w600, color: Colors.black),
-              textAlign: TextAlign.center,
-            ),
+            widget.IsSearch
+                ? SelectableText.rich(
+                    widget.highlightedContent!,
+                    style: FontStyle.cormorantStyle.copyWith(
+                        fontWeight: FontWeight.w600, color: Colors.black),
+                    textAlign: TextAlign.center,
+                  )
+                : SelectableText(
+                    widget.lists![widget.index].content!,
+                    style: FontStyle.cormorantStyle.copyWith(
+                        fontWeight: FontWeight.w600, color: Colors.black),
+                    textAlign: TextAlign.center,
+                  ),
             const SizedBox(height: 10),
             Text(
               " ______",

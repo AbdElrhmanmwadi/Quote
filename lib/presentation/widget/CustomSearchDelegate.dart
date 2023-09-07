@@ -30,7 +30,6 @@ class CustomSearchDelegate extends SearchDelegate {
     );
   }
 
-  // third overwrite to show query result
   @override
   Widget buildResults(BuildContext context) {
     return FutureBuilder<List<Results>?>(
@@ -55,7 +54,12 @@ class CustomSearchDelegate extends SearchDelegate {
             physics: const BouncingScrollPhysics(),
             itemCount: snapshot.data!.length,
             itemBuilder: (context, index) {
+              final result = snapshot.data![index];
+              final content = result.content!;
+              final highlightedContent = _highlightSearchTerm(content, query);
               return QuoteWidget(
+                IsSearch: true,
+                highlightedContent: highlightedContent,
                 id: snapshot.data![index].sId!,
                 currentIndex: index,
                 lists: snapshot.data,
@@ -66,6 +70,38 @@ class CustomSearchDelegate extends SearchDelegate {
         }
       },
     );
+  }
+
+// Function to apply background color to the searched word
+  TextSpan _highlightSearchTerm(String content, String searchTerm) {
+    final contentLower = content.toLowerCase();
+    final searchTermLower = searchTerm.toLowerCase();
+    final spans = <TextSpan>[];
+    int start = 0;
+
+    while (start < contentLower.length) {
+      final startIndex = contentLower.indexOf(searchTermLower, start);
+      if (startIndex == -1) {
+        spans.add(TextSpan(text: content.substring(start)));
+        break;
+      }
+
+      final endIndex = startIndex + searchTermLower.length;
+      spans.add(TextSpan(text: content.substring(start, startIndex)));
+      spans.add(
+        TextSpan(
+          text: content.substring(startIndex, endIndex),
+          style: TextStyle(
+            backgroundColor: Colors.yellow,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      );
+
+      start = endIndex;
+    }
+
+    return TextSpan(children: spans);
   }
 
   @override
