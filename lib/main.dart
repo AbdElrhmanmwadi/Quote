@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quote/core/SharedPreferences.dart';
 import 'package:quote/helper/my_bloc_Observer.dart';
+import 'package:quote/presentation/cubit/favorite_cubit.dart';
 import 'package:quote/presentation/screen/QuotesScreen.dart';
 import 'package:quote/presentation/bloc/quote_bloc.dart';
 import 'package:quote/presentation/screen/tagScreen.dart';
@@ -17,8 +18,15 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => QuoteBloc()..add(GetPostsEvent()),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => QuoteBloc()..add(GetPostsEvent()),
+        ),
+        BlocProvider(
+          create: (context) => FavoriteCubit(),
+        ),
+      ],
       child: MaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'Inspirational Quotes App',
@@ -28,4 +36,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-

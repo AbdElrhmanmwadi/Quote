@@ -149,7 +149,6 @@ class _QuotesScreenState extends State<QuotesScreen> {
                                 ),
                               )
                             : QuoteWidget(
-                              
                                 id: state.quotes[index].sId!,
                                 currentIndex: index,
                                 lists: state.quotes,
@@ -163,8 +162,10 @@ class _QuotesScreenState extends State<QuotesScreen> {
             case QouteStatus.error:
               return ErrorWidgets(
                 onRetry: () {
-            context.read<QuoteBloc>().add(GetPostsEvent(),);
-          }, 
+                  context.read<QuoteBloc>().add(
+                        GetPostsEvent(),
+                      );
+                },
                 errorMessage: state.errorMessage,
               );
           }
@@ -187,7 +188,8 @@ class ErrorWidgets extends StatefulWidget {
   final onRetry;
   const ErrorWidgets({
     super.key,
-    required this.errorMessage,required this.onRetry,
+    required this.errorMessage,
+    required this.onRetry,
   });
 
   @override
@@ -207,14 +209,14 @@ class _ErrorWidgetsState extends State<ErrorWidgets> {
           height: 100,
         ),
         MaterialButton(
-          color: Colors.red,
-          textColor: Colors.white,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
-          child: const Text(
-            'Retry',
-          ),
-          onPressed: widget.onRetry
-        )
+            color: Colors.red,
+            textColor: Colors.white,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
+            child: const Text(
+              'Retry',
+            ),
+            onPressed: widget.onRetry)
       ],
     );
   }

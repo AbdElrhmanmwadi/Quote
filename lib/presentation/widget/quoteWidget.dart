@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quote/core/SharedPreferences.dart';
 import 'package:quote/core/fontStyle.dart';
 import 'package:quote/model/quote.dart';
+import 'package:quote/presentation/cubit/favorite_cubit.dart';
 import 'package:quote/presentation/widget/QuoteController.dart';
 
-class QuoteWidget extends StatefulWidget {
+class QuoteWidget extends StatelessWidget {
   QuoteWidget({
     super.key,
     required int currentIndex,
@@ -20,32 +22,6 @@ class QuoteWidget extends StatefulWidget {
   final List<Results>? lists;
   final int index;
   final String id;
-
-  @override
-  State<QuoteWidget> createState() => _QuoteWidgetState();
-}
-
-class _QuoteWidgetState extends State<QuoteWidget> {
-  bool _isFavorite = false;
-
-  Future<void> _loadFavoriteQuoteStatus() async {
-    setState(() {
-      _isFavorite = SharedPrefController().getData(key: widget.id);
-    });
-  }
-
-  void _toggleFavorite() async {
-    setState(() {
-      _isFavorite = !_isFavorite;
-      SharedPrefController().setData(widget.id, _isFavorite);
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _loadFavoriteQuoteStatus();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,21 +45,21 @@ class _QuoteWidgetState extends State<QuoteWidget> {
               textAlign: TextAlign.end,
             ),
             Text(
-              "${widget._currentIndex + 1}",
+              "${_currentIndex + 1}",
               style: FontStyle.cormorantStyle.copyWith(
                 fontSize: 25,
               ),
               textAlign: TextAlign.end,
             ),
-            widget.IsSearch
+            IsSearch
                 ? SelectableText.rich(
-                    widget.highlightedContent!,
+                    highlightedContent!,
                     style: FontStyle.cormorantStyle.copyWith(
                         fontWeight: FontWeight.w600, color: Colors.black),
                     textAlign: TextAlign.center,
                   )
                 : SelectableText(
-                    widget.lists![widget.index].content!,
+                    lists![index].content!,
                     style: FontStyle.cormorantStyle.copyWith(
                         fontWeight: FontWeight.w600, color: Colors.black),
                     textAlign: TextAlign.center,
@@ -100,27 +76,35 @@ class _QuoteWidgetState extends State<QuoteWidget> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  " ${widget.lists![widget.index].author}",
+                  " ${lists![index].author}",
                   style: FontStyle.cormorantStyle.copyWith(
                       fontWeight: FontWeight.w400, color: Colors.black),
                   textAlign: TextAlign.end,
                 ),
                 Row(
                   children: [
-                    IconButton(
-                        icon: Icon(
-                          _isFavorite ? Icons.favorite : Icons.favorite_border,
-                          color: Colors.red,
-                        ),
-                        onPressed: _toggleFavorite),
+                    BlocBuilder<FavoriteCubit, FavoriteState>(
+                      builder: (context, state) {
+                        bool Favorite = SharedPrefController().getData(key: id);
+                        return IconButton(
+                            icon: Icon(
+                              Favorite ? Icons.favorite : Icons.favorite_border,
+                              color: Colors.red,
+                            ),
+                            onPressed: () {
+                              context.read<FavoriteCubit>().toggleFavorite(
+                                    id,
+                                  );
+                            });
+                      },
+                    ),
                     IconButton(
                         icon: Icon(
                           Icons.share,
                           color: Colors.grey[700],
                         ),
                         onPressed: () async {
-                          QuoteController.shareQuote(
-                              widget.lists, widget._currentIndex);
+                          QuoteController.shareQuote(lists, _currentIndex);
                         }),
                   ],
                 )

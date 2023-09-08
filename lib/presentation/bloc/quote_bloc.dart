@@ -69,5 +69,6 @@ class QuoteBloc extends Bloc<QuoteEvent, QuotessState> {
         }
       },
     );
+  //  on<GetPostsEvent>((event, emit) => null);
   }
 }
