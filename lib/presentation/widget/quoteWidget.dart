@@ -95,6 +95,7 @@ class QuoteWidget extends StatelessWidget {
                               context.read<FavoriteCubit>().toggleFavorite(
                                     id,
                                   );
+                              SharedPrefController().setData(id, !Favorite);
                             });
                       },
                     ),

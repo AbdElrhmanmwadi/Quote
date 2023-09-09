@@ -12,7 +12,7 @@ class FavoriteCubit extends Cubit<FavoriteState> {
   }
 
   void toggleFavorite(id) async {
-    SharedPrefController().setData(id, !state.Favorite);
+    
 
     emit(state.copyWith(Favorite: !state.Favorite));
     print(state.Favorite);
