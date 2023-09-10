@@ -6,8 +6,7 @@ import 'package:quote/presentation/widget/quoteWidget.dart';
 class CustomSearchDelegate extends SearchDelegate {
   List<Results>? searchTerms = [];
 
-  // first overwrite to
-  // clear the search text
+  
   @override
   List<Widget>? buildActions(BuildContext context) {
     return [
@@ -42,7 +41,7 @@ class CustomSearchDelegate extends SearchDelegate {
             ),
           );
         } else if (snapshot.hasError) {
-          return Center(
+          return const Center(
             child: Text('No Internet Connection'),
           );
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
@@ -72,7 +71,7 @@ class CustomSearchDelegate extends SearchDelegate {
     );
   }
 
-// Function to apply background color to the searched word
+
   TextSpan _highlightSearchTerm(String content, String searchTerm) {
     final contentLower = content.toLowerCase();
     final searchTermLower = searchTerm.toLowerCase();
@@ -91,7 +90,7 @@ class CustomSearchDelegate extends SearchDelegate {
       spans.add(
         TextSpan(
           text: content.substring(startIndex, endIndex),
-          style: TextStyle(
+          style:const TextStyle(
             backgroundColor: Colors.yellow,
             fontWeight: FontWeight.bold,
           ),

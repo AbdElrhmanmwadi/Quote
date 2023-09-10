@@ -70,14 +70,14 @@ class QuoteController {
                           fontWeight: FontWeight.w900,
                           color: Colors.red),
                     ),
-                    Divider(),
+                const    Divider(),
                     Text("' $quote '",
                         style: FontStyle.cormorantStyle.copyWith(
                             fontSize: 20,
                             fontFamily: 'Cormorant',
                             fontWeight: FontWeight.w500,
                             color: Colors.grey[900])),
-                    Divider(),
+                  const  Divider(),
                     Text("$author",
                         style: FontStyle.cormorantStyle.copyWith(
                             fontSize: 20,

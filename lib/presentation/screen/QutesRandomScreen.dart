@@ -19,33 +19,34 @@ class _QuotesRandomScreenState extends State<QuotesRandomScreen> {
 
   List<Results> lists = [];
   Results? results;
-  late QuoteBloc _quotesBloc;
+  late QuoteBloc _quotesBloc = QuoteBloc();
 
   @override
   void initState() {
     super.initState();
-    _quotesBloc = QuoteBloc();
-    _quotesBloc.add(FetchQuotessRandomeEvent());
   }
 
-  bool _rotateIcon = false;
   @override
   Widget build(BuildContext context) {
+    _quotesBloc.add(FetchQuotessRandomeEvent());
     return BlocProvider(
         create: (context) => _quotesBloc,
         child: Scaffold(
           floatingActionButton: FloatingActionButton(
             backgroundColor: Colors.red,
             onPressed: () async {
-              setState(() {
-                _rotateIcon = !_rotateIcon;
-              });
               _quotesBloc.add(FetchQuotessRandomeEvent());
             },
-            child: AnimatedRotation(
-              duration: const Duration(milliseconds: 300),
-              turns: _rotateIcon == true ? 180 * (3.14159265359 / 180) : 0,
-              child: const Icon(Icons.crisis_alert_outlined),
+            child: BlocBuilder<QuoteBloc, QuotessState>(
+              builder: (context, state) {
+                return AnimatedRotation(
+                  duration: const Duration(milliseconds: 300),
+                  turns: context.read<QuoteBloc>().rotateIcon == true
+                      ? 180 * (3.14159265359 / 180)
+                      : 0,
+                  child: const Icon(Icons.crisis_alert_outlined),
+                );
+              },
             ),
           ),
           appBar: AppBar(

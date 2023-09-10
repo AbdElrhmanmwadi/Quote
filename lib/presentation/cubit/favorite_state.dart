@@ -1,15 +1,15 @@
 part of 'favorite_cubit.dart';
 
 class FavoriteState extends Equatable {
-  final bool Favorite;
-  const FavoriteState({required this.Favorite});
+  final bool favorite;
+  const FavoriteState({required this.favorite});
  factory FavoriteState.initial(){
-    return const FavoriteState(Favorite: false);
+    return const FavoriteState(favorite: false);
   }
 
   @override
-  List<Object> get props => [Favorite];
-  FavoriteState copyWith({Favorite}) {
-    return FavoriteState(Favorite: Favorite ?? this.Favorite);
+  List<Object> get props => [favorite];
+  FavoriteState copyWith({favorite}) {
+    return FavoriteState(favorite: favorite ?? this.favorite);
   }
 }

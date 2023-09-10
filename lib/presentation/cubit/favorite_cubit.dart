@@ -14,7 +14,6 @@ class FavoriteCubit extends Cubit<FavoriteState> {
   void toggleFavorite(id) async {
     
 
-    emit(state.copyWith(Favorite: !state.Favorite));
-    print(state.Favorite);
+    emit(state.copyWith(favorite: !state.favorite));
   }
 }

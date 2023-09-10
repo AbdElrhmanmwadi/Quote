@@ -15,10 +15,7 @@ class QuotesScreen extends StatefulWidget {
 
 class _QuotesScreenState extends State<QuotesScreen> {
   final ScrollController _scrollController = ScrollController();
-  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
-      GlobalKey<RefreshIndicatorState>();
 
-  int page = 2;
   bool isFetching = false;
 
   @override
@@ -184,8 +181,8 @@ class _QuotesScreenState extends State<QuotesScreen> {
 }
 
 class ErrorWidgets extends StatefulWidget {
-  final errorMessage;
-  final onRetry;
+  final String errorMessage;
+  final void Function()? onRetry;
   const ErrorWidgets({
     super.key,
     required this.errorMessage,
@@ -213,10 +210,10 @@ class _ErrorWidgetsState extends State<ErrorWidgets> {
             textColor: Colors.white,
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
+            onPressed: widget.onRetry,
             child: const Text(
               'Retry',
-            ),
-            onPressed: widget.onRetry)
+            ))
       ],
     );
   }

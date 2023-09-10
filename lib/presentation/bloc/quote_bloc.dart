@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../core/ApiService.dart';
@@ -10,6 +9,7 @@ part 'quote_state.dart';
 
 class QuoteBloc extends Bloc<QuoteEvent, QuotessState> {
   List<Results> quotes = [];
+  bool rotateIcon = false;
 
   QuoteBloc() : super(QuotessState()) {
     on<QuoteEvent>(
@@ -51,6 +51,8 @@ class QuoteBloc extends Bloc<QuoteEvent, QuotessState> {
         }
         if (event is FetchQuotessRandomeEvent) {
           emit(QuotesLoadinggState());
+          rotateIcon = !rotateIcon;
+          print('$rotateIcon خخخخخخخخخخخخخخخخخخخخخخخخخخخخخخخخخخخd');
 
           try {
             Results? result = await ApiServies.getRandomQuote();
@@ -69,6 +71,6 @@ class QuoteBloc extends Bloc<QuoteEvent, QuotessState> {
         }
       },
     );
-  //  on<GetPostsEvent>((event, emit) => null);
+    //  on<GetPostsEvent>((event, emit) => null);
   }
 }
