@@ -8,23 +8,14 @@ import 'package:quote/presentation/widget/quoteWidget.dart';
 
 import '../bloc/quote_bloc.dart';
 
-class QuotesRandomScreen extends StatefulWidget {
-  @override
-  _QuotesRandomScreenState createState() => _QuotesRandomScreenState();
-}
-
-class _QuotesRandomScreenState extends State<QuotesRandomScreen> {
+class QuotesRandomScreen extends StatelessWidget {
   final PageController _pageController = PageController();
+
   final int _currentIndex = 0;
 
   List<Results> lists = [];
-  Results? results;
-  late QuoteBloc _quotesBloc = QuoteBloc();
 
-  @override
-  void initState() {
-    super.initState();
-  }
+  late QuoteBloc _quotesBloc = QuoteBloc();
 
   @override
   Widget build(BuildContext context) {
