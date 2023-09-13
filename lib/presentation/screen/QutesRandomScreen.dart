@@ -15,7 +15,7 @@ class QuotesRandomScreen extends StatelessWidget {
 
   List<Results> lists = [];
 
-  late QuoteBloc _quotesBloc = QuoteBloc();
+  final QuoteBloc _quotesBloc = QuoteBloc();
 
   @override
   Widget build(BuildContext context) {

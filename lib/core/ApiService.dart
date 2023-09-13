@@ -39,22 +39,22 @@ class ApiServies {
 
     return quoteByTag;
   }
+// this function use to get all quotes 
+  static Future<List<Results>> getAllQuotesFromPages(
+      int startPage, int endPage) async {
+    List<Results> allQuotes = [];
 
-  // static Future<List<Results>> getAllQuotesFromPages(
-  //     int startPage, int endPage) async {
-  //   List<Results> allQuotes = [];
+    for (int i = startPage; i <= endPage; i++) {
+      List<Results>? quotes = await getAllQuote(i);
+      if (quotes != null) {
+        allQuotes.addAll(quotes);
+      }
+    }
+    // storeQuotesInSharedPreferences(allQuotes);
+    data = allQuotes;
 
-  //   for (int i = startPage; i <= endPage; i++) {
-  //     List<Results>? quotes = await getAllQuote(i);
-  //     if (quotes != null) {
-  //       allQuotes.addAll(quotes);
-  //     }
-  //   }
-  //   // storeQuotesInSharedPreferences(allQuotes);
-  //   data = allQuotes;
-
-  //   return allQuotes;
-  // }
+    return allQuotes;
+  }
 
   static Future<void> storeQuotesInSharedPreferences(
       List<Results>? quotes) async {
@@ -93,7 +93,6 @@ class ApiServies {
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
       resultsQuote = Results.fromJson(jsonData);
-      print('${resultsQuote} oooooooooooooooooooooooooo');
 
       return resultsQuote;
     }
@@ -120,7 +119,6 @@ class ApiServies {
     if (response.statusCode == 200) {
       final jsonSearch = json.decode(response.body);
       listSerarh = search.fromJson(jsonSearch).results;
-      print('pppppppppppppppppppp');
       print('${listSerarh!}');
     }
     return listSerarh;
