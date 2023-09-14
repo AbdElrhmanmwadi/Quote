@@ -52,7 +52,6 @@ class QuoteBloc extends Bloc<QuoteEvent, QuotessState> {
         if (event is FetchQuotessRandomeEvent) {
           emit(QuotesLoadinggState());
           rotateIcon = !rotateIcon;
-          print('$rotateIcon خخخخخخخخخخخخخخخخخخخخخخخخخخخخخخخخخخخd');
 
           try {
             Results? result = await ApiServies.getRandomQuote();
@@ -71,6 +70,6 @@ class QuoteBloc extends Bloc<QuoteEvent, QuotessState> {
         }
       },
     );
-    //  on<GetPostsEvent>((event, emit) => null);
+  
   }
 }

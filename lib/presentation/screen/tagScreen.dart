@@ -87,7 +87,7 @@ class _TagScreenState extends State<TagScreen> {
           actions: [
             IconButton(
               onPressed: navigateToAnotherPage,
-              icon: Icon(
+              icon: const Icon(
                 Icons.arrow_forward,
                 color: Colors.red,
               ),
@@ -104,7 +104,7 @@ class _TagScreenState extends State<TagScreen> {
               ))),
       body: SafeArea(
         child: SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
+          physics: const BouncingScrollPhysics(),
           child: Wrap(
             alignment: WrapAlignment.center,
             crossAxisAlignment: WrapCrossAlignment.center,

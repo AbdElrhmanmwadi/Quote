@@ -51,41 +51,39 @@ class QuoteController {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Container(
-            child: Card(
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Container(
-                width: 100,
-                alignment: Alignment.center,
-                child: Column(
-                  children: [
-                    Text(
-                      'Daily Quote',
+          title: Card(
+            elevation: 0,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Container(
+              width: 100,
+              alignment: Alignment.center,
+              child: Column(
+                children: [
+                  Text(
+                    'Daily Quote',
+                    style: FontStyle.cormorantStyle.copyWith(
+                        fontSize: 25,
+                        fontFamily: 'Cormorant',
+                        fontWeight: FontWeight.w900,
+                        color: Colors.red),
+                  ),
+              const    Divider(),
+                  Text("' $quote '",
                       style: FontStyle.cormorantStyle.copyWith(
-                          fontSize: 25,
+                          fontSize: 20,
                           fontFamily: 'Cormorant',
-                          fontWeight: FontWeight.w900,
-                          color: Colors.red),
-                    ),
-                const    Divider(),
-                    Text("' $quote '",
-                        style: FontStyle.cormorantStyle.copyWith(
-                            fontSize: 20,
-                            fontFamily: 'Cormorant',
-                            fontWeight: FontWeight.w500,
-                            color: Colors.grey[900])),
-                  const  Divider(),
-                    Text("$author",
-                        style: FontStyle.cormorantStyle.copyWith(
-                            fontSize: 20,
-                            fontFamily: 'Cormorant',
-                            fontWeight: FontWeight.w500,
-                            color: Colors.grey[900])),
-                  ],
-                ),
+                          fontWeight: FontWeight.w500,
+                          color: Colors.grey[900])),
+                const  Divider(),
+                  Text("$author",
+                      style: FontStyle.cormorantStyle.copyWith(
+                          fontSize: 20,
+                          fontFamily: 'Cormorant',
+                          fontWeight: FontWeight.w500,
+                          color: Colors.grey[900])),
+                ],
               ),
             ),
           ),

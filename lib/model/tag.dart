@@ -23,14 +23,14 @@ class Tag {
     dateModified = json['dateModified'];
   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['_id'] = this.sId;
-    data['name'] = this.name;
-    data['slug'] = this.slug;
-    data['quoteCount'] = this.quoteCount;
-    data['dateAdded'] = this.dateAdded;
-    data['dateModified'] = this.dateModified;
-    return data;
-  }
+  // Map<String, dynamic> toJson() {
+  //   final Map<String, dynamic> data = new Map<String, dynamic>();
+  //   data['_id'] = this.sId;
+  //   data['name'] = this.name;
+  //   data['slug'] = this.slug;
+  //   data['quoteCount'] = this.quoteCount;
+  //   data['dateAdded'] = this.dateAdded;
+  //   data['dateModified'] = this.dateModified;
+  //   return data;
+  // }
 }

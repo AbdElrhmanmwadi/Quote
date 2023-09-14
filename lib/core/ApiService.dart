@@ -106,7 +106,6 @@ class ApiServies {
     if (response.statusCode == 200) {
       final jsontage = json.decode(response.body);
       tags = jsontage.map<Tag>((json) => Tag.fromJson(json)).toList();
-      tags[0].slug;
       return tags;
     }
     return tags;
@@ -119,7 +118,6 @@ class ApiServies {
     if (response.statusCode == 200) {
       final jsonSearch = json.decode(response.body);
       listSerarh = search.fromJson(jsonSearch).results;
-      print('${listSerarh!}');
     }
     return listSerarh;
   }
