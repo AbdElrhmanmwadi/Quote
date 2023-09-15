@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:quote/model/quote.dart';
 
-import 'package:quote/presentation/widget/QuoteController.dart';
-import 'package:quote/presentation/widget/quoteWidget.dart';
+import 'package:quote/presentation/widget/Quote_Controller.dart';
+import 'package:quote/presentation/widget/Quote_Widget.dart';
 
 import '../bloc/quote_bloc.dart';
 
@@ -90,7 +90,7 @@ class QuotesRandomScreen extends StatelessWidget {
                         itemCount: lists.length,
                         onPageChanged: (index) {},
                         itemBuilder: (context, index) {
-                          return QuoteWidget(
+                          return quoteWidget(
                             id: lists[index].sId!,
                             currentIndex: _currentIndex,
                             lists: lists,

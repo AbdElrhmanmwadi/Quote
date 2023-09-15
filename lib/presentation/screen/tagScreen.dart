@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:quote/core/ApiService.dart';
-import 'package:quote/core/SharedPreferences.dart';
-import 'package:quote/core/fontStyle.dart';
+import 'package:quote/core/api_service.dart';
+import 'package:quote/core/shared_preferences.dart';
+import 'package:quote/core/font_style.dart';
 import 'package:quote/model/tag.dart';
-import 'package:quote/presentation/screen/QuotesScreen.dart';
+import 'package:quote/presentation/screen/Quotes_Screen.dart';
 
 class TagScreen extends StatefulWidget {
   const TagScreen({Key? key}) : super(key: key);

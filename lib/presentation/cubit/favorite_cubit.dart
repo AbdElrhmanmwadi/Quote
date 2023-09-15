@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:quote/core/SharedPreferences.dart';
+import 'package:quote/core/shared_preferences.dart';
 
 part 'favorite_state.dart';
 

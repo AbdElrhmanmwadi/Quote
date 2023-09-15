@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../core/ApiService.dart';
+import '../../core/api_service.dart';
 import '../../model/quote.dart';
 
 part 'quote_event.dart';

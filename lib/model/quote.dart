@@ -1,4 +1,6 @@
-class quote {
+// ignore_for_file: prefer_collection_literals
+
+class Quote {
   int? count;
   int? totalCount;
   int? page;
@@ -6,7 +8,7 @@ class quote {
   int? lastItemIndex;
   List<Results>? results;
 
-  quote(
+  Quote(
       {this.count,
       this.totalCount,
       this.page,
@@ -14,7 +16,7 @@ class quote {
       this.lastItemIndex,
       this.results});
 
-  quote.fromJson(Map<String, dynamic> json) {
+  Quote.fromJson(Map<String, dynamic> json) {
     count = json['count'];
     totalCount = json['totalCount'];
     page = json['page'];
@@ -23,20 +25,20 @@ class quote {
     if (json['results'] != null) {
       results = <Results>[];
       json['results'].forEach((v) {
-        results!.add(new Results.fromJson(v));
+        results!.add( Results.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['count'] = this.count;
-    data['totalCount'] = this.totalCount;
-    data['page'] = this.page;
-    data['totalPages'] = this.totalPages;
-    data['lastItemIndex'] = this.lastItemIndex;
-    if (this.results != null) {
-      data['results'] = this.results!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data =  Map<String, dynamic>();
+    data['count'] = count;
+    data['totalCount'] = totalCount;
+    data['page'] = page;
+    data['totalPages'] = totalPages;
+    data['lastItemIndex'] = lastItemIndex;
+    if (results != null) {
+      data['results'] = results!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -74,15 +76,15 @@ class Results {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['_id'] = this.sId;
-    data['author'] = this.author;
-    data['content'] = this.content;
-    data['tags'] = this.tags;
-    data['authorSlug'] = this.authorSlug;
-    data['length'] = this.length;
-    data['dateAdded'] = this.dateAdded;
-    data['dateModified'] = this.dateModified;
+    final Map<String, dynamic> data = Map<String, dynamic>();
+    data['_id'] = sId;
+    data['author'] = author;
+    data['content'] = content;
+    data['tags'] = tags;
+    data['authorSlug'] = authorSlug;
+    data['length'] = length;
+    data['dateAdded'] = dateAdded;
+    data['dateModified'] = dateModified;
     return data;
   }
 }

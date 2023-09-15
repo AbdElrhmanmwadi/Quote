@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:quote/core/ApiService.dart';
+import 'package:quote/core/api_service.dart';
 import 'package:quote/model/quote.dart';
-import 'package:quote/presentation/widget/quoteWidget.dart';
+import 'package:quote/presentation/widget/Quote_Widget.dart';
 
 class CustomSearchDelegate extends SearchDelegate {
   List<Results>? searchTerms = [];
@@ -56,8 +56,8 @@ class CustomSearchDelegate extends SearchDelegate {
               final result = snapshot.data![index];
               final content = result.content!;
               final highlightedContent = _highlightSearchTerm(content, query);
-              return QuoteWidget(
-                IsSearch: true,
+              return quoteWidget(
+                isSearch: true,
                 highlightedContent: highlightedContent,
                 id: snapshot.data![index].sId!,
                 currentIndex: index,

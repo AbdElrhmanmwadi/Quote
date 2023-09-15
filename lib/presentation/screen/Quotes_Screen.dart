@@ -1,12 +1,13 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:quote/core/ApiService.dart';
-import 'package:quote/presentation/screen/QutesRandomScreen.dart';
+import 'package:quote/core/api_service.dart';
+import 'package:quote/presentation/screen/Qutes_Random_Screen.dart';
 import 'package:quote/presentation/bloc/quote_bloc.dart';
-import 'package:quote/presentation/widget/CustomSearchDelegate.dart';
-import 'package:quote/presentation/widget/QuoteController.dart';
-import 'package:quote/presentation/widget/quoteWidget.dart';
+import 'package:quote/presentation/widget/Custom_Search_Delegate.dart';
+import 'package:quote/presentation/widget/Quote_Widget.dart';
+import 'package:quote/presentation/widget/Quote_Controller.dart';
 
 class QuotesScreen extends StatefulWidget {
   @override
@@ -145,7 +146,7 @@ class _QuotesScreenState extends State<QuotesScreen> {
                                   ),
                                 ),
                               )
-                            : QuoteWidget(
+                            : quoteWidget(
                                 id: state.quotes[index].sId!,
                                 currentIndex: index,
                                 lists: state.quotes,

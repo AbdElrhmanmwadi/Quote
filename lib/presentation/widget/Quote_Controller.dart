@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_share/flutter_share.dart';
-import 'package:quote/core/ApiService.dart';
-import 'package:quote/core/SharedPreferences.dart';
-import 'package:quote/core/fontStyle.dart';
+import 'package:quote/core/api_service.dart';
+import 'package:quote/core/shared_preferences.dart';
+import 'package:quote/core/font_style.dart';
 
 class QuoteController {
   static Future<void> checkAndShowQuote(context) async {
@@ -22,13 +22,13 @@ class QuoteController {
     }
   }
 
-  static Future<void> shareQuote(lists, _currentIndex) async {
+  static Future<void> shareQuote(lists, currentIndex) async {
     if (lists != null &&
         lists!.isNotEmpty &&
-        _currentIndex >= 0 &&
-        _currentIndex < lists!.length) {
-      final quoteContent = lists![_currentIndex].content;
-      final quoteAuthor = lists![_currentIndex].author;
+        currentIndex >= 0 &&
+        currentIndex < lists!.length) {
+      final quoteContent = lists![currentIndex].content;
+      final quoteAuthor = lists![currentIndex].author;
 
       if (quoteContent != null && quoteAuthor != null) {
         final shareText = '$quoteContent - $quoteAuthor';
@@ -70,14 +70,14 @@ class QuoteController {
                         color: Colors.red),
                   ),
               const    Divider(),
-                  Text("' $quote '",
+                  Text(quote ,
                       style: FontStyle.cormorantStyle.copyWith(
                           fontSize: 20,
                           fontFamily: 'Cormorant',
                           fontWeight: FontWeight.w500,
                           color: Colors.grey[900])),
                 const  Divider(),
-                  Text("$author",
+                  Text(author,
                       style: FontStyle.cormorantStyle.copyWith(
                           fontSize: 20,
                           fontFamily: 'Cormorant',

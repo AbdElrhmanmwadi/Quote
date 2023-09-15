@@ -1,7 +1,8 @@
+
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:quote/core/SharedPreferences.dart';
+import 'package:quote/core/shared_preferences.dart';
 import 'package:quote/model/quote.dart';
 import 'package:quote/model/search.dart';
 import 'package:quote/model/tag.dart';
@@ -16,7 +17,7 @@ class ApiServies {
     http.Response response = await http.get(url);
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
-      listResults = quote.fromJson(jsonData).results;
+      listResults = Quote.fromJson(jsonData).results;
       data = listResults;
 
       return data;
@@ -31,7 +32,7 @@ class ApiServies {
     http.Response response = await http.get(url);
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
-      listResults = quote.fromJson(jsonData).results;
+      listResults = Quote.fromJson(jsonData).results;
       quoteByTag!.addAll(listResults!);
 
       return quoteByTag;

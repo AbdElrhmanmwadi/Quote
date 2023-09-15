@@ -18,7 +18,7 @@ class search {
 
   search.fromJson(Map<String, dynamic> json) {
     iInfo =
-        json['__info__'] != null ? new Info.fromJson(json['__info__']) : null;
+        json['__info__'] != null ?  Info.fromJson(json['__info__']) : null;
     count = json['count'];
     totalCount = json['totalCount'];
     page = json['page'];
@@ -33,15 +33,15 @@ class search {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.iInfo != null) {
-      data['__info__'] = this.iInfo!.toJson();
+    if (iInfo != null) {
+      data['__info__'] = iInfo!.toJson();
     }
-    data['count'] = this.count;
-    data['totalCount'] = this.totalCount;
-    data['page'] = this.page;
-    data['totalPages'] = this.totalPages;
-    if (this.results != null) {
-      data['results'] = this.results!.map((v) => v.toJson()).toList();
+    data['count'] = count;
+    data['totalCount'] = totalCount;
+    data['page'] = page;
+    data['totalPages'] = totalPages;
+    if (results != null) {
+      data['results'] = results!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -53,14 +53,13 @@ class Info {
   Info({this.search});
 
   Info.fromJson(Map<String, dynamic> json) {
-    search =
-        json['$search'] != null ? new Search.fromJson(json['$search']) : null;
+    search = json['$search'] != null ? Search.fromJson(json['$search']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.search != null) {
-      data['$search'] = this.search!.toJson();
+    final Map<String, dynamic> data = Map<String, dynamic>();
+    if (search != null) {
+      data['$search'] = search!.toJson();
     }
     return data;
   }
@@ -73,14 +72,14 @@ class Search {
 
   Search.fromJson(Map<String, dynamic> json) {
     queryString = json['queryString'] != null
-        ? new QueryString.fromJson(json['queryString'])
+        ? QueryString.fromJson(json['queryString'])
         : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.queryString != null) {
-      data['queryString'] = this.queryString!.toJson();
+    final Map<String, dynamic> data = Map<String, dynamic>();
+    if (queryString != null) {
+      data['queryString'] = queryString!.toJson();
     }
     return data;
   }
@@ -98,11 +97,9 @@ class QueryString {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['query'] = this.query;
-    data['defaultPath'] = this.defaultPath;
+    final Map<String, dynamic> data = Map<String, dynamic>();
+    data['query'] = query;
+    data['defaultPath'] = defaultPath;
     return data;
   }
 }
-
-

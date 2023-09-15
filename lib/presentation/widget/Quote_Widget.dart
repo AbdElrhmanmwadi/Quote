@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:quote/core/SharedPreferences.dart';
-import 'package:quote/core/fontStyle.dart';
+import 'package:quote/core/shared_preferences.dart';
+import 'package:quote/core/font_style.dart';
 import 'package:quote/model/quote.dart';
 import 'package:quote/presentation/cubit/favorite_cubit.dart';
-import 'package:quote/presentation/widget/QuoteController.dart';
+import 'package:quote/presentation/widget/Quote_Controller.dart';
 
-class QuoteWidget extends StatelessWidget {
-  QuoteWidget({
+class quoteWidget extends StatelessWidget {
+ const quoteWidget({
     super.key,
     required int currentIndex,
     required this.lists,
     required this.index,
     required this.id,
     this.highlightedContent,
-    this.IsSearch = false,
+    this.isSearch = false,
   }) : _currentIndex = currentIndex;
-  final bool IsSearch;
+  final bool isSearch;
   final TextSpan? highlightedContent;
   final int _currentIndex;
   final List<Results>? lists;
@@ -51,7 +51,7 @@ class QuoteWidget extends StatelessWidget {
               ),
               textAlign: TextAlign.end,
             ),
-            IsSearch
+            isSearch
                 ? SelectableText.rich(
                     highlightedContent!,
                     style: FontStyle.cormorantStyle.copyWith(
@@ -85,17 +85,17 @@ class QuoteWidget extends StatelessWidget {
                   children: [
                     BlocBuilder<FavoriteCubit, FavoriteState>(
                       builder: (context, state) {
-                        bool Favorite = SharedPrefController().getData(key: id);
+                        bool favorite = SharedPrefController().getData(key: id);
                         return IconButton(
                             icon: Icon(
-                              Favorite ? Icons.favorite : Icons.favorite_border,
+                              favorite ? Icons.favorite : Icons.favorite_border,
                               color: Colors.red,
                             ),
                             onPressed: () {
                               context.read<FavoriteCubit>().toggleFavorite(
                                     id,
                                   );
-                              SharedPrefController().setData(id, !Favorite);
+                              SharedPrefController().setData(id, !favorite);
                             });
                       },
                     ),
