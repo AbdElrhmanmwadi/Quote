@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:quote/core/api_service.dart';
-import 'package:quote/presentation/screen/Qutes_Random_Screen.dart';
+import 'package:quote/presentation/screen/qutes_random_screen.dart';
 import 'package:quote/presentation/bloc/quote_bloc.dart';
 import 'package:quote/presentation/widget/Custom_Search_Delegate.dart';
 import 'package:quote/presentation/widget/Quote_Widget.dart';

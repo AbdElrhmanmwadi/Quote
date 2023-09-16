@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
@@ -40,7 +39,8 @@ class ApiServies {
 
     return quoteByTag;
   }
-// this function use to get all quotes 
+
+// this function use to get all quotes
   static Future<List<Results>> getAllQuotesFromPages(
       int startPage, int endPage) async {
     List<Results> allQuotes = [];
@@ -66,7 +66,6 @@ class ApiServies {
     }
   }
 
-
   static Future<List<Results>?> getQuotesFromSharedPreferences() async {
     final quotesJson = SharedPrefController().getString(key: 'quotes');
     if (quotesJson != null) {
@@ -79,16 +78,8 @@ class ApiServies {
     return null;
   }
 
-  static Future<Results> getRandomQuote() async {
-    Results? resultsQuote = Results(
-        sId: '11',
-        author: 'Abed',
-        content: 'OOOO',
-        tags: [],
-        authorSlug: 'YYY',
-        length: 100,
-        dateAdded: '2023-04-14',
-        dateModified: '2023-04-14');
+  static Future<Results?> getRandomQuote() async {
+    Results? resultsQuote ;
     Uri url = Uri.parse('https://api.quotable.io/random');
     http.Response response = await http.get(url);
     if (response.statusCode == 200) {

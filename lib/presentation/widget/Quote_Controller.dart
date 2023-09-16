@@ -15,7 +15,7 @@ class QuoteController {
     if (now.difference(lastDate).inDays >= 1) {
       var data = await ApiServies.getRandomQuote();
 
-      await _showQuoteDialog(context, data.content!, data.author!);
+      await _showQuoteDialog(context, data!.content!, data.author!);
 
       SharedPrefController()
           .setString('last_shown_date', now.toIso8601String());

@@ -58,7 +58,7 @@ class QuoteBloc extends Bloc<QuoteEvent, QuotessState> {
             if (quotes.isNotEmpty) {
               quotes.removeAt(0);
             }
-            quotes.add(result);
+            quotes.add(result!);
             if (quotes.isNotEmpty) {
               emit(QuotesLoadedRandomeeState(quotes));
             } else {
@@ -70,6 +70,5 @@ class QuoteBloc extends Bloc<QuoteEvent, QuotessState> {
         }
       },
     );
-  
   }
 }
