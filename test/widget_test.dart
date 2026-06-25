@@ -1,30 +1,57 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:quote/main.dart';
+import 'package:quote/app.dart';
+import 'package:quote/core/storage/preferences_service.dart';
+import 'package:quote/data/models/quote.dart';
+import 'package:quote/data/repositories/quote_repository.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget( MyApp());
+  // A small in-memory dataset so tests never touch rootBundle (the test binding
+  // evicts the asset cache between tests, which makes a real asset load hang).
+  const seed = [
+    Quote(id: '1', content: 'Stay curious.', author: 'Anon', tags: ['wisdom']),
+    Quote(id: '2', content: 'Keep going.', author: 'Anon', tags: ['motivation']),
+  ];
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+  Future<(PreferencesService, QuoteRepository)> setUpDeps({
+    required bool onboarded,
+  }) async {
+    SharedPreferences.setMockInitialValues({'onboarding_complete': onboarded});
+    final prefs = await PreferencesService.create();
+    final repository = QuoteRepository(seed: seed);
+    return (prefs, repository);
+  }
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+  // Pumps a few bounded frames to let async loads resolve. Avoids
+  // `pumpAndSettle`, which never returns while a progress indicator animates.
+  Future<void> settle(WidgetTester tester) async {
+    for (var i = 0; i < 5; i++) {
+      await tester.pump(const Duration(milliseconds: 50));
+    }
+  }
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+  testWidgets('shows the feed when onboarding is complete', (tester) async {
+    final (prefs, repository) = await setUpDeps(onboarded: true);
+
+    await tester.pumpWidget(QuoteApp(prefs: prefs, repository: repository));
+    await settle(tester);
+
+    // Bottom navigation exposes all three destinations.
+    expect(find.text('Quotes'), findsWidgets);
+    expect(find.text('Random'), findsOneWidget);
+    expect(find.text('Favorites'), findsOneWidget);
+    // The seeded quote is rendered in the feed.
+    expect(find.text('Stay curious.'), findsOneWidget);
+  });
+
+  testWidgets('shows onboarding on first run', (tester) async {
+    final (prefs, repository) = await setUpDeps(onboarded: false);
+
+    await tester.pumpWidget(QuoteApp(prefs: prefs, repository: repository));
+    await settle(tester);
+
+    expect(find.text('What inspires you?'), findsOneWidget);
+    expect(find.text('Continue'), findsOneWidget);
   });
 }

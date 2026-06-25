@@ -1,40 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:quote/core/shared_preferences.dart';
-import 'package:quote/helper/my_bloc_Observer.dart';
-import 'package:quote/presentation/cubit/favorite_cubit.dart';
-import 'package:quote/presentation/screen/Quotes_Screen.dart';
-import 'package:quote/presentation/bloc/quote_bloc.dart';
-import 'package:quote/presentation/screen/tagScreen.dart';
 
-void main() async {
-  Bloc.observer = MyBlocObserver();
+import 'app.dart';
+import 'core/observer/app_bloc_observer.dart';
+import 'core/storage/preferences_service.dart';
+import 'data/repositories/quote_repository.dart';
+
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  Bloc.observer = const AppBlocObserver();
 
-  await SharedPrefController.initialize();
-  runApp( const MyApp());
-}
+  final prefs = await PreferencesService.create();
+  final repository = QuoteRepository();
+  await repository.ensureLoaded();
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (context) => QuoteBloc()..add(GetPostsEvent()),
-        ),
-        BlocProvider(
-          create: (context) => FavoriteCubit(),
-        ),
-      ],
-      child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: 'Inspirational Quotes App',
-          home: SharedPrefController().getData(key: 'tag')
-              ? QuotesScreen()
-              : const TagScreen()),
-    );
-  }
+  runApp(QuoteApp(prefs: prefs, repository: repository));
 }
