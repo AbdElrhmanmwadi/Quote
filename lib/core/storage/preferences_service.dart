@@ -26,12 +26,14 @@ class PreferencesService {
       _prefs.setBool(_kOnboardingComplete, value);
 
   /// Tag slugs the user picked during onboarding (empty == "all topics").
-  List<String> get selectedTags => _prefs.getStringList(_kSelectedTags) ?? const [];
+  List<String> get selectedTags =>
+      _prefs.getStringList(_kSelectedTags) ?? const [];
   Future<void> setSelectedTags(List<String> slugs) =>
       _prefs.setStringList(_kSelectedTags, slugs);
 
   /// Ids of quotes the user marked as favorite.
-  List<String> get favoriteIds => _prefs.getStringList(_kFavoriteIds) ?? const [];
+  List<String> get favoriteIds =>
+      _prefs.getStringList(_kFavoriteIds) ?? const [];
   Future<void> setFavoriteIds(List<String> ids) =>
       _prefs.setStringList(_kFavoriteIds, ids);
 

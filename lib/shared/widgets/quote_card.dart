@@ -35,7 +35,8 @@ class QuoteCard extends StatelessWidget {
                 style: AppTheme.quoteStyle(context),
               )
             else
-              SelectableText(quote.content, style: AppTheme.quoteStyle(context)),
+              SelectableText(quote.content,
+                  style: AppTheme.quoteStyle(context)),
             const SizedBox(height: 16),
             Text(
               '— ${quote.author}',

@@ -11,7 +11,8 @@ void main() {
   // evicts the asset cache between tests, which makes a real asset load hang).
   const seed = [
     Quote(id: '1', content: 'Stay curious.', author: 'Anon', tags: ['wisdom']),
-    Quote(id: '2', content: 'Keep going.', author: 'Anon', tags: ['motivation']),
+    Quote(
+        id: '2', content: 'Keep going.', author: 'Anon', tags: ['motivation']),
   ];
 
   Future<(PreferencesService, QuoteRepository)> setUpDeps({
@@ -41,8 +42,9 @@ void main() {
     expect(find.text('Quotes'), findsWidgets);
     expect(find.text('Random'), findsOneWidget);
     expect(find.text('Favorites'), findsOneWidget);
-    // The seeded quote is rendered in the feed.
-    expect(find.text('Stay curious.'), findsOneWidget);
+    // The seeded quote is rendered in the feed. (SelectableText surfaces its
+    // text in both an EditableText and an internal Text, so allow >= 1.)
+    expect(find.text('Stay curious.'), findsAtLeastNWidgets(1));
   });
 
   testWidgets('shows onboarding on first run', (tester) async {

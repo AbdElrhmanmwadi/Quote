@@ -16,7 +16,8 @@ part 'feed_state.dart';
 /// page requests (the old screen guarded this with a manual `isFetching` flag
 /// and a `Future.delayed`).
 class FeedBloc extends Bloc<FeedEvent, FeedState> {
-  FeedBloc({required QuoteRepository repository, required PreferencesService prefs})
+  FeedBloc(
+      {required QuoteRepository repository, required PreferencesService prefs})
       : _repository = repository,
         _prefs = prefs,
         super(const FeedState()) {
@@ -31,7 +32,8 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
   final PreferencesService _prefs;
   static const _pageSize = 12;
 
-  Future<void> _onRefreshed(FeedRefreshed event, Emitter<FeedState> emit) async {
+  Future<void> _onRefreshed(
+      FeedRefreshed event, Emitter<FeedState> emit) async {
     emit(const FeedState(status: FeedStatus.loading));
     try {
       await _repository.ensureLoaded();
