@@ -5,6 +5,7 @@ import '../../../data/repositories/quote_repository.dart';
 import '../../../shared/widgets/quote_card.dart';
 import '../../../shared/widgets/status_view.dart';
 import '../../search/quote_search_delegate.dart';
+import '../../settings/view/settings_screen.dart';
 import '../bloc/feed_bloc.dart';
 
 /// The main, infinitely-scrolling quote feed.
@@ -52,6 +53,13 @@ class _FeedScreenState extends State<FeedScreen> {
             onPressed: () => showSearch(
               context: context,
               delegate: QuoteSearchDelegate(context.read<QuoteRepository>()),
+            ),
+          ),
+          IconButton(
+            tooltip: 'Settings',
+            icon: const Icon(Icons.settings_outlined),
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const SettingsScreen()),
             ),
           ),
         ],

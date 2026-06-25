@@ -27,4 +27,10 @@ class FavoritesCubit extends Cubit<FavoritesState> {
     emit(FavoritesState(ids: next));
     await _prefs.setFavoriteIds(next.toList());
   }
+
+  Future<void> clearAll() async {
+    if (state.ids.isEmpty) return;
+    emit(const FavoritesState(ids: {}));
+    await _prefs.setFavoriteIds(const []);
+  }
 }

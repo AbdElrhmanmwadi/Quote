@@ -98,6 +98,10 @@ class QuoteRepository {
     return source[_random.nextInt(source.length)];
   }
 
+  /// All quotes carrying [slug], in dataset order.
+  List<Quote> byTag(String slug) =>
+      _quotes.where((q) => q.tags.contains(slug)).toList(growable: false);
+
   /// Case-insensitive search across quote content and author.
   List<Quote> search(String query) {
     final q = query.trim().toLowerCase();

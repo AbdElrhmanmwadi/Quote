@@ -4,9 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../core/storage/preferences_service.dart';
 import '../data/repositories/quote_repository.dart';
 import '../features/favorites/view/favorites_screen.dart';
-import '../features/feed/bloc/feed_bloc.dart';
 import '../features/feed/view/feed_screen.dart';
-import '../features/random/cubit/random_cubit.dart';
 import '../features/random/view/random_screen.dart';
 import '../shared/widgets/daily_quote_dialog.dart';
 
@@ -37,49 +35,35 @@ class _HomeShellState extends State<HomeShell> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (context) => FeedBloc(
-            repository: context.read<QuoteRepository>(),
-            prefs: context.read<PreferencesService>(),
-          )..add(const FeedRefreshed()),
-        ),
-        BlocProvider(
-          create: (context) =>
-              RandomCubit(context.read<QuoteRepository>())..shuffle(),
-        ),
-      ],
-      child: Scaffold(
-        body: IndexedStack(
-          index: _index,
-          children: const [
-            FeedScreen(),
-            RandomScreen(),
-            FavoritesScreen(),
-          ],
-        ),
-        bottomNavigationBar: NavigationBar(
-          selectedIndex: _index,
-          onDestinationSelected: (value) => setState(() => _index = value),
-          destinations: const [
-            NavigationDestination(
-              icon: Icon(Icons.format_quote_outlined),
-              selectedIcon: Icon(Icons.format_quote),
-              label: 'Quotes',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.shuffle_outlined),
-              selectedIcon: Icon(Icons.shuffle),
-              label: 'Random',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.favorite_border),
-              selectedIcon: Icon(Icons.favorite),
-              label: 'Favorites',
-            ),
-          ],
-        ),
+    return Scaffold(
+      body: IndexedStack(
+        index: _index,
+        children: const [
+          FeedScreen(),
+          RandomScreen(),
+          FavoritesScreen(),
+        ],
+      ),
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: _index,
+        onDestinationSelected: (value) => setState(() => _index = value),
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.format_quote_outlined),
+            selectedIcon: Icon(Icons.format_quote),
+            label: 'Quotes',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.shuffle_outlined),
+            selectedIcon: Icon(Icons.shuffle),
+            label: 'Random',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.favorite_border),
+            selectedIcon: Icon(Icons.favorite),
+            label: 'Favorites',
+          ),
+        ],
       ),
     );
   }

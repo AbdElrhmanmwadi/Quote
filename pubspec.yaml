@@ -37,6 +37,8 @@ dependencies:
   shared_preferences: ^2.3.5
   # Native share sheet (replaces the unmaintained flutter_share package).
   share_plus: ^10.1.4
+  # Temp directory for rendering a quote to an image before sharing.
+  path_provider: ^2.1.5
   # State management.
   flutter_bloc: ^8.1.6
   bloc_concurrency: ^0.2.5

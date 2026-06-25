@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart' show ThemeMode;
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// Thin, strongly-typed wrapper around [SharedPreferences].
@@ -20,6 +21,7 @@ class PreferencesService {
   static const _kSelectedTags = 'selected_tags';
   static const _kFavoriteIds = 'favorite_ids';
   static const _kLastDailyQuoteDate = 'last_daily_quote_date';
+  static const _kThemeMode = 'theme_mode';
 
   bool get onboardingComplete => _prefs.getBool(_kOnboardingComplete) ?? false;
   Future<void> setOnboardingComplete(bool value) =>
@@ -44,4 +46,18 @@ class PreferencesService {
 
   Future<void> setLastDailyQuoteDate(DateTime date) =>
       _prefs.setString(_kLastDailyQuoteDate, date.toIso8601String());
+
+  ThemeMode get themeMode {
+    switch (_prefs.getString(_kThemeMode)) {
+      case 'light':
+        return ThemeMode.light;
+      case 'dark':
+        return ThemeMode.dark;
+      default:
+        return ThemeMode.system;
+    }
+  }
+
+  Future<void> setThemeMode(ThemeMode mode) =>
+      _prefs.setString(_kThemeMode, mode.name);
 }
