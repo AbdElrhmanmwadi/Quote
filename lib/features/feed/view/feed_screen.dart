@@ -6,6 +6,7 @@ import '../../../shared/widgets/quote_card.dart';
 import '../../../shared/widgets/status_view.dart';
 import '../../search/quote_search_delegate.dart';
 import '../../settings/view/settings_screen.dart';
+import '../../streak/streak_cubit.dart';
 import '../bloc/feed_bloc.dart';
 
 /// The main, infinitely-scrolling quote feed.
@@ -47,6 +48,32 @@ class _FeedScreenState extends State<FeedScreen> {
       appBar: AppBar(
         title: const Text('Quotes'),
         actions: [
+          BlocBuilder<StreakCubit, int>(
+            builder: (context, streak) {
+              if (streak <= 0) return const SizedBox.shrink();
+              final colors = Theme.of(context).colorScheme;
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+                child: Center(
+                  child: Tooltip(
+                    message: '$streak-day streak',
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.local_fire_department,
+                            size: 20, color: colors.primary),
+                        const SizedBox(width: 2),
+                        Text('$streak',
+                            style: TextStyle(
+                                color: colors.primary,
+                                fontWeight: FontWeight.w700)),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
           IconButton(
             tooltip: 'Search',
             icon: const Icon(Icons.search),
