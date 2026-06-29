@@ -1,20 +1,24 @@
-import 'dart:io';
-import 'dart:ui' as ui;
-
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../core/theme/app_theme.dart';
 import '../../data/models/quote.dart';
+import '../../features/collections/widgets/add_to_collection_sheet.dart';
 import '../../features/favorites/cubit/favorites_cubit.dart';
+import '../../features/share/view/share_studio_screen.dart';
+import '../../features/similar/view/similar_quotes_screen.dart';
 import '../../features/tags/view/tag_quotes_screen.dart';
 
 /// Actions exposed in the card's overflow menu.
-enum _QuoteAction { copy, shareText, shareImage }
+enum _QuoteAction {
+  copy,
+  shareText,
+  shareImage,
+  addToCollection,
+  moreLikeThis,
+}
 
 /// Reusable card that renders a single [Quote] with favorite + overflow actions.
 ///
@@ -31,13 +35,11 @@ class QuoteCard extends StatefulWidget {
 }
 
 class _QuoteCardState extends State<QuoteCard> {
-  // Wraps the quote content so it can be rasterized for "share as image".
-  final _boundaryKey = GlobalKey();
-
   Quote get _quote => widget.quote;
 
   Future<void> _copy() async {
     await Clipboard.setData(ClipboardData(text: _quote.shareText));
+    await HapticFeedback.selectionClick();
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Copied to clipboard')),
@@ -46,25 +48,16 @@ class _QuoteCardState extends State<QuoteCard> {
 
   Future<void> _shareText() => Share.share(_quote.shareText);
 
-  Future<void> _shareImage() async {
-    try {
-      final boundary = _boundaryKey.currentContext?.findRenderObject()
-          as RenderRepaintBoundary?;
-      if (boundary == null) return;
-      final image = await boundary.toImage(pixelRatio: 3);
-      final data = await image.toByteData(format: ui.ImageByteFormat.png);
-      if (data == null) return;
-      final bytes = data.buffer.asUint8List();
-      final dir = await getTemporaryDirectory();
-      final file = await File('${dir.path}/quote_${_quote.id}.png')
-          .writeAsBytes(bytes, flush: true);
-      await Share.shareXFiles([XFile(file.path)], text: _quote.shareText);
-    } catch (_) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Could not create image')),
-      );
-    }
+  void _openShareStudio() {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => ShareStudioScreen(quote: _quote)),
+    );
+  }
+
+  void _openSimilar() {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => SimilarQuotesScreen(quote: _quote)),
+    );
   }
 
   void _onAction(_QuoteAction action) {
@@ -74,7 +67,11 @@ class _QuoteCardState extends State<QuoteCard> {
       case _QuoteAction.shareText:
         _shareText();
       case _QuoteAction.shareImage:
-        _shareImage();
+        _openShareStudio();
+      case _QuoteAction.addToCollection:
+        showAddToCollectionSheet(context, quoteId: _quote.id);
+      case _QuoteAction.moreLikeThis:
+        _openSimilar();
     }
   }
 
@@ -98,9 +95,7 @@ class _QuoteCardState extends State<QuoteCard> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          RepaintBoundary(
-            key: _boundaryKey,
-            child: Container(
+          Container(
               color: colors.surfaceContainerHigh,
               padding: const EdgeInsets.fromLTRB(20, 24, 20, 16),
               child: Column(
@@ -145,7 +140,6 @@ class _QuoteCardState extends State<QuoteCard> {
                   ],
                 ],
               ),
-            ),
           ),
           const Divider(height: 1),
           Padding(
@@ -165,8 +159,10 @@ class _QuoteCardState extends State<QuoteCard> {
                         isFav ? Icons.favorite : Icons.favorite_border,
                         color: isFav ? colors.error : null,
                       ),
-                      onPressed: () =>
-                          context.read<FavoritesCubit>().toggle(_quote.id),
+                      onPressed: () {
+                        HapticFeedback.selectionClick();
+                        context.read<FavoritesCubit>().toggle(_quote.id);
+                      },
                     );
                   },
                 ),
@@ -195,7 +191,23 @@ class _QuoteCardState extends State<QuoteCard> {
                       value: _QuoteAction.shareImage,
                       child: ListTile(
                         leading: Icon(Icons.image_outlined),
-                        title: Text('Share as image'),
+                        title: Text('Create image'),
+                        contentPadding: EdgeInsets.zero,
+                      ),
+                    ),
+                    PopupMenuItem(
+                      value: _QuoteAction.addToCollection,
+                      child: ListTile(
+                        leading: Icon(Icons.collections_bookmark_outlined),
+                        title: Text('Add to collection'),
+                        contentPadding: EdgeInsets.zero,
+                      ),
+                    ),
+                    PopupMenuItem(
+                      value: _QuoteAction.moreLikeThis,
+                      child: ListTile(
+                        leading: Icon(Icons.auto_awesome_outlined),
+                        title: Text('More like this'),
                         contentPadding: EdgeInsets.zero,
                       ),
                     ),

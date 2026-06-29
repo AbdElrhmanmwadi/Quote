@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../core/services/notification_service.dart';
 import '../../../core/storage/preferences_service.dart';
 import '../../../data/models/tag.dart';
 import '../../../data/repositories/quote_repository.dart';
 import '../../favorites/cubit/favorites_cubit.dart';
 import '../../feed/bloc/feed_bloc.dart';
+import '../../streak/streak_cubit.dart';
 import '../cubit/theme_cubit.dart';
 
 /// App settings: appearance, interest topics, and data management.
@@ -21,12 +23,65 @@ class _SettingsScreenState extends State<SettingsScreen> {
   List<Tag> _tags = const [];
   bool _dirty = false;
 
+  late bool _notificationsEnabled;
+  late TimeOfDay _reminderTime;
+  bool _busyNotifications = false;
+
   @override
   void initState() {
     super.initState();
     final prefs = context.read<PreferencesService>();
     _selected = prefs.selectedTags.toSet();
     _tags = context.read<QuoteRepository>().tags();
+    _notificationsEnabled = prefs.notificationsEnabled;
+    _reminderTime =
+        TimeOfDay(hour: prefs.notificationHour, minute: prefs.notificationMinute);
+  }
+
+  Future<void> _toggleNotifications(bool value) async {
+    if (_busyNotifications) return;
+    final prefs = context.read<PreferencesService>();
+    final service = context.read<NotificationService>();
+    setState(() => _busyNotifications = true);
+    try {
+      if (value) {
+        final granted = await service.requestPermission();
+        if (!granted) {
+          if (!mounted) return;
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+                content: Text('Notification permission was denied.')),
+          );
+          return;
+        }
+        await prefs.setNotificationsEnabled(true);
+        await service.scheduleDaily(
+            _reminderTime.hour, _reminderTime.minute);
+      } else {
+        await prefs.setNotificationsEnabled(false);
+        await service.cancel();
+      }
+      if (!mounted) return;
+      setState(() => _notificationsEnabled = value);
+    } finally {
+      if (mounted) setState(() => _busyNotifications = false);
+    }
+  }
+
+  Future<void> _pickReminderTime() async {
+    final picked = await showTimePicker(
+      context: context,
+      initialTime: _reminderTime,
+    );
+    if (picked == null || !mounted) return;
+    final prefs = context.read<PreferencesService>();
+    await prefs.setNotificationTime(picked.hour, picked.minute);
+    setState(() => _reminderTime = picked);
+    if (_notificationsEnabled && mounted) {
+      await context
+          .read<NotificationService>()
+          .scheduleDaily(picked.hour, picked.minute);
+    }
   }
 
   Future<void> _saveInterests() async {
@@ -50,6 +105,36 @@ class _SettingsScreenState extends State<SettingsScreen> {
       body: ListView(
         padding: const EdgeInsets.symmetric(vertical: 8),
         children: [
+          _SectionHeader('Your streak'),
+          BlocBuilder<StreakCubit, int>(
+            builder: (context, streak) {
+              return ListTile(
+                leading: Icon(Icons.local_fire_department,
+                    color: theme.colorScheme.primary),
+                title: Text('$streak-day streak'),
+                subtitle: Text(streak <= 1
+                    ? 'Open the app daily to build your streak.'
+                    : 'Keep it going — come back tomorrow!'),
+              );
+            },
+          ),
+          const SizedBox(height: 16),
+          _SectionHeader('Daily reminder'),
+          SwitchListTile(
+            secondary: const Icon(Icons.notifications_outlined),
+            title: const Text('Daily quote notification'),
+            subtitle: const Text('Get a fresh quote once a day.'),
+            value: _notificationsEnabled,
+            onChanged: _busyNotifications ? null : _toggleNotifications,
+          ),
+          ListTile(
+            leading: const Icon(Icons.schedule_outlined),
+            title: const Text('Reminder time'),
+            subtitle: Text(_reminderTime.format(context)),
+            enabled: _notificationsEnabled && !_busyNotifications,
+            onTap: _pickReminderTime,
+          ),
+          const SizedBox(height: 16),
           _SectionHeader('Appearance'),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),

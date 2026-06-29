@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../core/storage/preferences_service.dart';
 import '../data/repositories/quote_repository.dart';
+import '../features/collections/view/collections_screen.dart';
 import '../features/favorites/view/favorites_screen.dart';
 import '../features/feed/view/feed_screen.dart';
 import '../features/random/view/random_screen.dart';
@@ -42,6 +43,7 @@ class _HomeShellState extends State<HomeShell> {
           FeedScreen(),
           RandomScreen(),
           FavoritesScreen(),
+          CollectionsScreen(),
         ],
       ),
       bottomNavigationBar: NavigationBar(
@@ -62,6 +64,11 @@ class _HomeShellState extends State<HomeShell> {
             icon: Icon(Icons.favorite_border),
             selectedIcon: Icon(Icons.favorite),
             label: 'Favorites',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.collections_bookmark_outlined),
+            selectedIcon: Icon(Icons.collections_bookmark),
+            label: 'Collections',
           ),
         ],
       ),

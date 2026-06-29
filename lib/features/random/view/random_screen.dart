@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -52,7 +53,10 @@ class RandomScreen extends StatelessWidget {
         },
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => context.read<RandomCubit>().shuffle(),
+        onPressed: () {
+          HapticFeedback.selectionClick();
+          context.read<RandomCubit>().shuffle();
+        },
         icon: const Icon(Icons.shuffle),
         label: const Text('Shuffle'),
       ),
