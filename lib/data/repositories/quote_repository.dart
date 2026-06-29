@@ -113,6 +113,26 @@ class QuoteRepository {
         .toList(growable: false);
   }
 
+  /// Quotes most similar to [quote], best first.
+  ///
+  /// Scoring is purely offline: +2 per shared tag and +3 for the same author,
+  /// which favors topical matches while still surfacing the author's other
+  /// work. The quote itself and anything with a zero score are excluded.
+  List<Quote> similar(Quote quote, {int limit = 12}) {
+    final scored = <({Quote quote, int score})>[];
+    for (final other in _quotes) {
+      if (other.id == quote.id) continue;
+      var score = 0;
+      for (final tag in other.tags) {
+        if (quote.tags.contains(tag)) score += 2;
+      }
+      if (other.author == quote.author) score += 3;
+      if (score > 0) scored.add((quote: other, score: score));
+    }
+    scored.sort((a, b) => b.score.compareTo(a.score));
+    return scored.take(limit).map((e) => e.quote).toList(growable: false);
+  }
+
   /// Resolves stored favorite ids back to full quotes, preserving order.
   List<Quote> byIds(List<String> ids) {
     final index = {for (final q in _quotes) q.id: q};
