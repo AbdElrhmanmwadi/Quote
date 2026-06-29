@@ -2,6 +2,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:quote/app.dart';
+import 'package:quote/core/services/notification_service.dart';
+import 'package:quote/core/services/widget_service.dart';
 import 'package:quote/core/storage/preferences_service.dart';
 import 'package:quote/data/models/quote.dart';
 import 'package:quote/data/repositories/quote_repository.dart';
@@ -35,7 +37,12 @@ void main() {
   testWidgets('shows the feed when onboarding is complete', (tester) async {
     final (prefs, repository) = await setUpDeps(onboarded: true);
 
-    await tester.pumpWidget(QuoteApp(prefs: prefs, repository: repository));
+    await tester.pumpWidget(QuoteApp(
+      prefs: prefs,
+      repository: repository,
+      notifications: NotificationService(repository),
+      widgets: WidgetService(repository),
+    ));
     await settle(tester);
 
     // Bottom navigation exposes all three destinations.
@@ -50,7 +57,12 @@ void main() {
   testWidgets('shows onboarding on first run', (tester) async {
     final (prefs, repository) = await setUpDeps(onboarded: false);
 
-    await tester.pumpWidget(QuoteApp(prefs: prefs, repository: repository));
+    await tester.pumpWidget(QuoteApp(
+      prefs: prefs,
+      repository: repository,
+      notifications: NotificationService(repository),
+      widgets: WidgetService(repository),
+    ));
     await settle(tester);
 
     expect(find.text('What inspires you?'), findsOneWidget);
