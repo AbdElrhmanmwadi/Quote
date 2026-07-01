@@ -125,6 +125,16 @@ class _QuoteCardState extends State<QuoteCard> {
                           fontWeight: FontWeight.w600,
                         ),
                   ),
+                  if (_quote.source != null) ...[
+                    const SizedBox(height: 2),
+                    Text(
+                      _quote.source!,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: colors.outline,
+                            fontStyle: FontStyle.italic,
+                          ),
+                    ),
+                  ],
                   if (_quote.tags.isNotEmpty) ...[
                     const SizedBox(height: 12),
                     Wrap(

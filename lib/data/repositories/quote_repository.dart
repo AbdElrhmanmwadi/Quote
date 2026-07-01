@@ -71,7 +71,8 @@ class QuoteRepository {
   void _buildIndex() {
     _index = SemanticIndex.build([
       for (final q in _quotes)
-        '${q.content} ${q.author} ${q.tags.map(_humanize).join(' ')}',
+        '${q.content} ${q.author} ${q.source ?? ''} '
+            '${q.tags.map(_humanize).join(' ')}',
     ]);
   }
 

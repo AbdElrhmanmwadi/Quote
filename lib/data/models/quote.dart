@@ -12,6 +12,7 @@ class Quote extends Equatable {
     required this.content,
     required this.author,
     this.tags = const [],
+    this.source,
   });
 
   final String id;
@@ -19,7 +20,12 @@ class Quote extends Equatable {
   final String author;
   final List<String> tags;
 
+  /// Where the quote comes from, e.g. the book it appears in. Null for
+  /// standalone quotes (aphorisms, poetry lines without a named work).
+  final String? source;
+
   factory Quote.fromJson(Map<String, dynamic> json) {
+    final rawSource = (json['source'] ?? '').toString().trim();
     return Quote(
       id: (json['_id'] ?? json['id'] ?? '').toString(),
       content: (json['content'] ?? json['quote'] ?? '').toString(),
@@ -28,6 +34,7 @@ class Quote extends Equatable {
               ?.map((t) => t.toString())
               .toList(growable: false) ??
           const [],
+      source: rawSource.isEmpty ? null : rawSource,
     );
   }
 
@@ -36,10 +43,14 @@ class Quote extends Equatable {
         'content': content,
         'author': author,
         'tags': tags,
+        if (source != null) 'source': source,
       };
 
+  /// The author, with the source appended when present (e.g. "جبران، النبي").
+  String get attribution => source == null ? author : '$author، $source';
+
   /// Text suitable for sharing to other apps.
-  String get shareText => '"$content"\n— $author';
+  String get shareText => '"$content"\n— $attribution';
 
   @override
   List<Object?> get props => [id];
