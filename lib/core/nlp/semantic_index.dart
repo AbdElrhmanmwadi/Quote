@@ -282,14 +282,57 @@ class SemanticIndex {
     'وطن': ['بلاد', 'أرض', 'دار'],
   });
 
-  /// Normalizes and stems every key and value so thesaurus lookups line up with
-  /// the tokens produced by [_tokenize], regardless of language.
+  /// Cross-language concept groups. Every term links to all the others in its
+  /// group, in both directions, so an English query surfaces Arabic quotes on
+  /// the same idea and vice-versa (e.g. "fear" → خوف, "حكمة" → wisdom). Terms
+  /// absent from the corpus simply add no weight, so over-listing is harmless.
+  static const _bridge = <List<String>>[
+    ['fear', 'courage', 'brave', 'خوف', 'شجاعة', 'جرأة', 'إقدام'],
+    ['love', 'حب', 'عشق', 'هوى'],
+    ['hope', 'أمل', 'رجاء', 'تفاؤل'],
+    ['wisdom', 'حكمة', 'عقل'],
+    ['knowledge', 'science', 'learn', 'علم', 'معرفة', 'تعلم'],
+    ['life', 'حياة', 'عيش', 'دنيا'],
+    ['success', 'ambition', 'نجاح', 'طموح', 'مجد'],
+    ['patience', 'صبر', 'ثبات'],
+    ['homeland', 'nation', 'وطن', 'بلاد'],
+    ['strength', 'power', 'قوة'],
+    ['friend', 'friendship', 'صديق', 'صداقة'],
+    ['time', 'وقت', 'زمن'],
+    ['happiness', 'joy', 'سعادة', 'فرح'],
+    ['sad', 'sorrow', 'حزن'],
+    ['morals', 'ethics', 'أخلاق'],
+  ];
+
+  /// Normalizes and stems every key/value so lookups line up with the tokens
+  /// from [_tokenize], regardless of language, then folds in the [_bridge]
+  /// groups as bidirectional cross-language links (merged, not overwritten).
   static Map<String, List<String>> _prepThesaurus(
     Map<String, List<String>> raw,
   ) {
+    final merged = <String, Set<String>>{};
+    void link(String from, String to) {
+      if (from == to) return;
+      (merged[from] ??= <String>{}).add(to);
+    }
+
+    for (final e in raw.entries) {
+      final key = _canonical(e.key);
+      for (final v in e.value) {
+        link(key, _canonical(v));
+      }
+    }
+    for (final group in _bridge) {
+      final terms = group.map(_canonical).toSet();
+      for (final term in terms) {
+        for (final other in terms) {
+          link(term, other);
+        }
+      }
+    }
+
     return {
-      for (final e in raw.entries)
-        _canonical(e.key): e.value.map(_canonical).toList(growable: false),
+      for (final e in merged.entries) e.key: e.value.toList(growable: false),
     };
   }
 }

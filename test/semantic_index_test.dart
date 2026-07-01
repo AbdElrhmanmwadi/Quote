@@ -74,4 +74,31 @@ void main() {
       expect(index.query('شوكولاتة').first.index, 2);
     });
   });
+
+  group('SemanticIndex (cross-language bridge)', () {
+    final docs = [
+      'The only thing we have to fear is fear itself', // 0 EN fear
+      'A recipe for the perfect chocolate cake', // 1 EN unrelated
+      'الشجاعة أن تواجه ما تخاف منه', // 2 AR courage/fear
+      'العلم نور والجهل ظلام', // 3 AR knowledge
+    ];
+    final index = SemanticIndex.build(docs);
+
+    test('English query surfaces Arabic quotes on the same concept', () {
+      // "fear" (EN) should reach the Arabic courage/fear quote via the bridge.
+      expect(index.query('fear').map((r) => r.index), contains(2));
+    });
+
+    test('Arabic query surfaces English quotes on the same concept', () {
+      // "خوف" (AR) should reach the English fear quote.
+      expect(index.query('خوف').map((r) => r.index), contains(0));
+    });
+
+    test('the bridge does not create spurious cross-language matches', () {
+      // "knowledge" links to علم (doc 3), never to the chocolate recipe.
+      final ranked = index.query('knowledge').map((r) => r.index).toList();
+      expect(ranked, contains(3));
+      expect(ranked, isNot(contains(1)));
+    });
+  });
 }
