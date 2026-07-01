@@ -137,6 +137,26 @@ class QuoteRepository {
   List<Quote> byTag(String slug) =>
       _quotes.where((q) => q.tags.contains(slug)).toList(growable: false);
 
+  /// All quotes by [author], in dataset order.
+  List<Quote> byAuthor(String author) =>
+      _quotes.where((q) => q.author == author).toList(growable: false);
+
+  /// Distinct authors with how many quotes each has, most first then A–Z.
+  List<({String author, int count})> authors() {
+    final counts = <String, int>{};
+    for (final quote in _quotes) {
+      counts[quote.author] = (counts[quote.author] ?? 0) + 1;
+    }
+    final result = counts.entries
+        .map((e) => (author: e.key, count: e.value))
+        .toList();
+    result.sort((a, b) {
+      final byCount = b.count.compareTo(a.count);
+      return byCount != 0 ? byCount : a.author.compareTo(b.author);
+    });
+    return result;
+  }
+
   /// Case-insensitive substring search across quote content and author.
   ///
   /// Kept for exact/partial-word matching (e.g. while the user is still typing

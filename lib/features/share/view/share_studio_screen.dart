@@ -25,6 +25,11 @@ const _backgrounds = <_Background>[
   _Background('Night', [Color(0xFF0F2027), Color(0xFF203A43)], Colors.white),
   _Background('Rose', [Color(0xFFEECDA3), Color(0xFFEF629F)], Colors.white),
   _Background('Paper', [Color(0xFFF5F3EE), Color(0xFFE8E2D5)], Color(0xFF2B2B2B)),
+  _Background('Ocean', [Color(0xFF2193B0), Color(0xFF6DD5ED)], Colors.white),
+  _Background('Ember', [Color(0xFF642B73), Color(0xFFC6426E)], Colors.white),
+  _Background('Sand', [Color(0xFF3E2723), Color(0xFF8D6E63)], Color(0xFFF5EFE6)),
+  _Background('Mint', [Color(0xFF11998E), Color(0xFF38EF7D)], Colors.white),
+  _Background('Slate', [Color(0xFF232526), Color(0xFF414345)], Colors.white),
 ];
 
 /// Lets the user style a quote (background + font) and share it as an image.
@@ -45,6 +50,7 @@ class _ShareStudioScreenState extends State<ShareStudioScreen> {
   int _bgIndex = 0;
   bool _serif = true;
   bool _sharing = false;
+  double _fontSize = 24;
 
   Quote get _quote => widget.quote;
 
@@ -86,7 +92,12 @@ class _ShareStudioScreenState extends State<ShareStudioScreen> {
                 padding: const EdgeInsets.all(20),
                 child: RepaintBoundary(
                   key: _boundaryKey,
-                  child: _Preview(quote: _quote, background: bg, serif: _serif),
+                  child: _Preview(
+                    quote: _quote,
+                    background: bg,
+                    serif: _serif,
+                    fontSize: _fontSize,
+                  ),
                 ),
               ),
             ),
@@ -95,8 +106,10 @@ class _ShareStudioScreenState extends State<ShareStudioScreen> {
             backgrounds: _backgrounds,
             selectedIndex: _bgIndex,
             serif: _serif,
+            fontSize: _fontSize,
             onBackground: (i) => setState(() => _bgIndex = i),
             onToggleFont: () => setState(() => _serif = !_serif),
+            onFontSize: (size) => setState(() => _fontSize = size),
           ),
         ],
       ),
@@ -116,12 +129,17 @@ class _ShareStudioScreenState extends State<ShareStudioScreen> {
 }
 
 class _Preview extends StatelessWidget {
-  const _Preview(
-      {required this.quote, required this.background, required this.serif});
+  const _Preview({
+    required this.quote,
+    required this.background,
+    required this.serif,
+    required this.fontSize,
+  });
 
   final Quote quote;
   final _Background background;
   final bool serif;
+  final double fontSize;
 
   @override
   Widget build(BuildContext context) {
@@ -154,7 +172,7 @@ class _Preview extends StatelessWidget {
                 fontFamily: !serif
                     ? null
                     : (arabic ? AppTheme.arabicSerifFamily : AppTheme.serifFamily),
-                fontSize: 24,
+                fontSize: fontSize,
                 height: arabic ? 1.7 : 1.35,
                 fontWeight: FontWeight.w500,
                 color: background.textColor,
@@ -180,15 +198,21 @@ class _Toolbar extends StatelessWidget {
     required this.backgrounds,
     required this.selectedIndex,
     required this.serif,
+    required this.fontSize,
     required this.onBackground,
     required this.onToggleFont,
+    required this.onFontSize,
   });
 
   final List<_Background> backgrounds;
   final int selectedIndex;
   final bool serif;
+  final double fontSize;
   final ValueChanged<int> onBackground;
   final VoidCallback onToggleFont;
+  final ValueChanged<double> onFontSize;
+
+  static const _sizes = <String, double>{'S': 20, 'M': 24, 'L': 30};
 
   @override
   Widget build(BuildContext context) {
@@ -232,13 +256,24 @@ class _Toolbar extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 8),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: TextButton.icon(
-                onPressed: onToggleFont,
-                icon: const Icon(Icons.font_download_outlined),
-                label: Text(serif ? 'Font: Serif' : 'Font: Sans'),
-              ),
+            Row(
+              children: [
+                TextButton.icon(
+                  onPressed: onToggleFont,
+                  icon: const Icon(Icons.font_download_outlined),
+                  label: Text(serif ? 'Font: Serif' : 'Font: Sans'),
+                ),
+                const Spacer(),
+                for (final entry in _sizes.entries)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 6),
+                    child: ChoiceChip(
+                      label: Text(entry.key),
+                      selected: fontSize == entry.value,
+                      onSelected: (_) => onFontSize(entry.value),
+                    ),
+                  ),
+              ],
             ),
           ],
         ),

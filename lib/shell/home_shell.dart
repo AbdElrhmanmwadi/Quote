@@ -7,6 +7,7 @@ import '../features/collections/view/collections_screen.dart';
 import '../features/favorites/view/favorites_screen.dart';
 import '../features/feed/view/feed_screen.dart';
 import '../features/random/view/random_screen.dart';
+import '../features/topics/view/topics_screen.dart';
 import '../shared/widgets/daily_quote_dialog.dart';
 
 /// Top-level shell hosting the three main destinations behind a Material 3
@@ -42,6 +43,7 @@ class _HomeShellState extends State<HomeShell> {
         children: const [
           FeedScreen(),
           RandomScreen(),
+          TopicsScreen(),
           FavoritesScreen(),
           CollectionsScreen(),
         ],
@@ -59,6 +61,11 @@ class _HomeShellState extends State<HomeShell> {
             icon: Icon(Icons.shuffle_outlined),
             selectedIcon: Icon(Icons.shuffle),
             label: 'Random',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.category_outlined),
+            selectedIcon: Icon(Icons.category),
+            label: 'Topics',
           ),
           NavigationDestination(
             icon: Icon(Icons.favorite_border),

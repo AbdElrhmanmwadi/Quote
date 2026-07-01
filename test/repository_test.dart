@@ -41,6 +41,17 @@ void main() {
       expect(repo().byTag('life').map((q) => q.id), ['2', '3']);
     });
 
+    test('byAuthor() returns all quotes by an author, in order', () {
+      expect(repo().byAuthor('Amy').map((q) => q.id), ['2', '4']);
+    });
+
+    test('authors() counts and sorts by popularity then name', () {
+      final authors = repo().authors();
+      expect(authors.first.author, 'Amy'); // Amy has 2, the rest have 1
+      expect(authors.first.count, 2);
+      expect(authors.map((a) => a.author), containsAll(['Zoe', 'Bob']));
+    });
+
     test('search() matches content and author, case-insensitively', () {
       expect(repo().search('AMY').map((q) => q.id), ['2', '4']);
       expect(repo().search('beta').single.id, '2');

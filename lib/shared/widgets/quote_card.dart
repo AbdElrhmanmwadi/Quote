@@ -6,6 +6,7 @@ import 'package:share_plus/share_plus.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/util/bidi.dart';
 import '../../data/models/quote.dart';
+import '../../features/authors/view/author_quotes_screen.dart';
 import '../../features/collections/widgets/add_to_collection_sheet.dart';
 import '../../features/favorites/cubit/favorites_cubit.dart';
 import '../../features/share/view/share_studio_screen.dart';
@@ -84,6 +85,14 @@ class _QuoteCardState extends State<QuoteCard> {
     );
   }
 
+  void _openAuthor() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => AuthorQuotesScreen(author: _quote.author),
+      ),
+    );
+  }
+
   static String _label(String slug) =>
       slug.isEmpty ? slug : '${slug[0].toUpperCase()}${slug.substring(1)}';
 
@@ -118,12 +127,16 @@ class _QuoteCardState extends State<QuoteCard> {
                     SelectableText(_quote.content,
                         style: AppTheme.quoteStyle(context, text: _quote.content)),
                   const SizedBox(height: 16),
-                  Text(
-                    '— ${_quote.author}',
-                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                          color: colors.primary,
-                          fontWeight: FontWeight.w600,
-                        ),
+                  InkWell(
+                    onTap: _openAuthor,
+                    borderRadius: BorderRadius.circular(4),
+                    child: Text(
+                      '— ${_quote.author}',
+                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                            color: colors.primary,
+                            fontWeight: FontWeight.w600,
+                          ),
+                    ),
                   ),
                   if (_quote.source != null) ...[
                     const SizedBox(height: 2),
