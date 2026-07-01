@@ -14,6 +14,9 @@ class AppTheme {
   static const Color _seed = Color(0xFF5B5BD6); // calm indigo/violet
   static const String serifFamily = 'Cormorant';
 
+  /// Classical Arabic serif used for Arabic quote text (Cormorant is Latin-only).
+  static const String arabicSerifFamily = 'Amiri';
+
   static ThemeData light() => _base(Brightness.light);
   static ThemeData dark() => _base(Brightness.dark);
 
@@ -66,15 +69,15 @@ class AppTheme {
 
   /// Text style for the body of a quote.
   ///
-  /// The Cormorant serif is Latin-only, so when [text] is Arabic we fall back to
-  /// the platform font (which has proper Arabic glyphs) and give it a little
-  /// more line height for the taller script.
+  /// The Cormorant serif is Latin-only, so when [text] is Arabic we use the
+  /// bundled Amiri Arabic serif and give it a little more line height for the
+  /// taller script.
   static TextStyle quoteStyle(BuildContext context, {String? text}) {
     final arabic = text != null && isRtl(text);
     return TextStyle(
-      fontFamily: arabic ? null : serifFamily,
+      fontFamily: arabic ? arabicSerifFamily : serifFamily,
       fontSize: 24,
-      height: arabic ? 1.6 : 1.35,
+      height: arabic ? 1.7 : 1.35,
       fontWeight: FontWeight.w500,
       color: Theme.of(context).colorScheme.onSurface,
     );

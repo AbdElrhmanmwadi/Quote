@@ -207,6 +207,37 @@ class QuoteRepository {
     return scored.take(limit).map((e) => e.quote).toList(growable: false);
   }
 
+  /// Personalized recommendations built from the user's [favoriteIds].
+  ///
+  /// For every favorite we pull its semantic neighbors and accumulate a
+  /// reciprocal-rank score per candidate, so a quote that ranks highly for
+  /// several favorites rises to the top. Favorites themselves are excluded.
+  /// Fully offline — it reuses the same TF-IDF similarity as [similar].
+  List<Quote> recommendations(List<String> favoriteIds, {int limit = 20}) {
+    final favSet = favoriteIds.toSet();
+    final favorites = byIds(favoriteIds);
+    if (favorites.isEmpty) return const [];
+
+    final scores = <String, double>{};
+    for (final fav in favorites) {
+      final neighbors = similar(fav, limit: 15);
+      for (var i = 0; i < neighbors.length; i++) {
+        final candidate = neighbors[i];
+        if (favSet.contains(candidate.id)) continue;
+        scores[candidate.id] = (scores[candidate.id] ?? 0) + 1.0 / (i + 1);
+      }
+    }
+
+    final byId = {for (final q in _quotes) q.id: q};
+    final ranked = scores.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
+    return ranked
+        .take(limit)
+        .map((e) => byId[e.key])
+        .whereType<Quote>()
+        .toList(growable: false);
+  }
+
   /// Resolves stored favorite ids back to full quotes, preserving order.
   List<Quote> byIds(List<String> ids) {
     final index = {for (final q in _quotes) q.id: q};

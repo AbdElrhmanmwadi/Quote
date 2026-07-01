@@ -81,6 +81,25 @@ void main() {
     });
   });
 
+  group('QuoteRepository recommendations', () {
+    const recSeed = [
+      Quote(id: '1', content: 'courage and bravery win', author: 'A', tags: ['courage']),
+      Quote(id: '2', content: 'be brave and bold today', author: 'B', tags: ['courage']),
+      Quote(id: '3', content: 'a chocolate cake recipe', author: 'C', tags: ['food']),
+    ];
+
+    test('suggests neighbors of favorites and excludes the favorites', () {
+      final recs = QuoteRepository(seed: recSeed).recommendations(['1']);
+      expect(recs.map((q) => q.id), contains('2'));
+      expect(recs.map((q) => q.id), isNot(contains('1')));
+      expect(recs.map((q) => q.id), isNot(contains('3'))); // unrelated
+    });
+
+    test('returns nothing without favorites', () {
+      expect(QuoteRepository(seed: recSeed).recommendations(const []), isEmpty);
+    });
+  });
+
   group('QuoteRepository language filter', () {
     const mixed = [
       Quote(id: 'e1', content: 'Alpha wisdom', author: 'Zoe'),

@@ -151,9 +151,11 @@ class _Preview extends StatelessWidget {
             Text(
               quote.content,
               style: TextStyle(
-                fontFamily: (serif && !arabic) ? AppTheme.serifFamily : null,
+                fontFamily: !serif
+                    ? null
+                    : (arabic ? AppTheme.arabicSerifFamily : AppTheme.serifFamily),
                 fontSize: 24,
-                height: arabic ? 1.6 : 1.35,
+                height: arabic ? 1.7 : 1.35,
                 fontWeight: FontWeight.w500,
                 color: background.textColor,
               ),

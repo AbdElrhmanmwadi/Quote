@@ -5,6 +5,7 @@ import '../../../core/util/quote_language.dart';
 import '../../../data/repositories/quote_repository.dart';
 import '../../../shared/widgets/quote_card.dart';
 import '../../../shared/widgets/status_view.dart';
+import '../../recommendations/view/recommendations_screen.dart';
 import '../../search/quote_search_delegate.dart';
 import '../../settings/view/settings_screen.dart';
 import '../../streak/streak_cubit.dart';
@@ -74,6 +75,14 @@ class _FeedScreenState extends State<FeedScreen> {
                 ),
               );
             },
+          ),
+          IconButton(
+            tooltip: 'For You',
+            icon: const Icon(Icons.auto_awesome_outlined),
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                  builder: (_) => const RecommendationsScreen()),
+            ),
           ),
           BlocBuilder<FeedBloc, FeedState>(
             buildWhen: (prev, curr) => prev.language != curr.language,

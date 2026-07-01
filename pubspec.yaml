@@ -88,6 +88,11 @@ flutter:
           weight: 400
         - asset: assets/font/Cormorant-Regular.ttf
           weight: 500
+    # Amiri: a classical Arabic serif (OFL) for displaying Arabic quotes,
+    # since the Latin Cormorant has no Arabic glyphs.
+    - family: Amiri
+      fonts:
+        - asset: assets/font/Amiri-Regular.ttf
   #         style: italic
   #   - family: Trajan Pro
   #     fonts:

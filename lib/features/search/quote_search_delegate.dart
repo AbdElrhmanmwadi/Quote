@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../core/util/bidi.dart';
+import '../../core/util/quote_language.dart';
 import '../../data/models/quote.dart';
 import '../../data/repositories/quote_repository.dart';
 import '../../shared/widgets/quote_card.dart';
@@ -17,8 +19,35 @@ class QuoteSearchDelegate extends SearchDelegate<Quote?> {
 
   final QuoteRepository _repository;
 
+  /// Language filter for results. A [ValueNotifier] so the results rebuild
+  /// immediately when it changes (SearchDelegate has no setState of its own).
+  final ValueNotifier<QuoteLanguage> _language =
+      ValueNotifier(QuoteLanguage.all);
+
   @override
   List<Widget> buildActions(BuildContext context) => [
+        ValueListenableBuilder<QuoteLanguage>(
+          valueListenable: _language,
+          builder: (context, language, _) => PopupMenuButton<QuoteLanguage>(
+            tooltip: 'Language',
+            icon: Icon(
+              Icons.translate,
+              color: language == QuoteLanguage.all
+                  ? null
+                  : Theme.of(context).colorScheme.primary,
+            ),
+            initialValue: language,
+            onSelected: (value) => _language.value = value,
+            itemBuilder: (context) => [
+              for (final option in QuoteLanguage.values)
+                CheckedPopupMenuItem(
+                  value: option,
+                  checked: option == language,
+                  child: Text(option.label),
+                ),
+            ],
+          ),
+        ),
         if (query.isNotEmpty)
           IconButton(
             tooltip: 'Clear',
@@ -47,24 +76,39 @@ class QuoteSearchDelegate extends SearchDelegate<Quote?> {
         message: 'Search quotes by word or author.',
       );
     }
-    final results = _repository.smartSearch(query);
-    if (results.isEmpty) {
-      return const StatusView(
-        icon: Icons.search_off,
-        message: 'No quotes matched your search.',
-      );
-    }
-    return ListView.builder(
-      itemCount: results.length,
-      itemBuilder: (context, index) {
-        final quote = results[index];
-        return QuoteCard(
-          quote: quote,
-          highlighted: _highlight(context, quote.content, query),
+    return ValueListenableBuilder<QuoteLanguage>(
+      valueListenable: _language,
+      builder: (context, language, _) {
+        final results = _repository
+            .smartSearch(query)
+            .where((q) => _matchesLanguage(language, q))
+            .toList(growable: false);
+        if (results.isEmpty) {
+          return const StatusView(
+            icon: Icons.search_off,
+            message: 'No quotes matched your search.',
+          );
+        }
+        return ListView.builder(
+          itemCount: results.length,
+          itemBuilder: (context, index) {
+            final quote = results[index];
+            return QuoteCard(
+              quote: quote,
+              highlighted: _highlight(context, quote.content, query),
+            );
+          },
         );
       },
     );
   }
+
+  static bool _matchesLanguage(QuoteLanguage language, Quote quote) =>
+      switch (language) {
+        QuoteLanguage.all => true,
+        QuoteLanguage.arabic => isRtl(quote.content),
+        QuoteLanguage.english => !isRtl(quote.content),
+      };
 
   TextSpan _highlight(BuildContext context, String content, String term) {
     final base = TextStyle(color: Theme.of(context).colorScheme.onSurface);
