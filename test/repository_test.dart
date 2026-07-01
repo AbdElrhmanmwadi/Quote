@@ -46,6 +46,28 @@ void main() {
       expect(repo().search('   ').isEmpty, isTrue);
     });
 
+    test('semanticSearch() ranks by relevance and skips blanks', () {
+      final hits = repo().semanticSearch('wisdom');
+      expect(hits.map((q) => q.id), containsAll(['1', '4'])); // the wisdom quotes
+      expect(repo().semanticSearch('   ').isEmpty, isTrue);
+    });
+
+    test('smartSearch() keeps exact matches first, then related ones', () {
+      final results = repo().smartSearch('wisdom');
+      // Exact substring hits ('Alpha wisdom', 'Delta wisdom') lead the list.
+      expect(results.take(2).map((q) => q.id), containsAll(['1', '4']));
+      // No duplicate ids across the substring + semantic passes.
+      final ids = results.map((q) => q.id).toList();
+      expect(ids.toSet().length, ids.length);
+    });
+
+    test('similar() blends semantic content with tag/author signals', () {
+      final source = seed[1]; // 'Beta hope' by Amy, tags hope/life
+      final results = repo().similar(source);
+      expect(results.map((q) => q.id), isNot(contains('2'))); // excludes self
+      expect(results, isNotEmpty);
+    });
+
     test('byIds() resolves and preserves order, skipping unknown', () {
       expect(repo().byIds(['3', '1', 'nope']).map((q) => q.id), ['3', '1']);
     });

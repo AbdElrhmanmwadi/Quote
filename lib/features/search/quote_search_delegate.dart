@@ -7,8 +7,11 @@ import '../../shared/widgets/status_view.dart';
 
 /// Searches the offline dataset and highlights the matched term.
 ///
-/// Because the repository is in-memory, results are synchronous and instant —
-/// no more `FutureBuilder` + network round-trip per keystroke.
+/// Ranking is meaning-aware (see [QuoteRepository.smartSearch]): exact matches
+/// first, then semantically related quotes from the offline TF-IDF index — so
+/// "overcoming fear" also surfaces quotes about courage. Because the repository
+/// is in-memory, results are synchronous and instant — no `FutureBuilder` or
+/// network round-trip per keystroke.
 class QuoteSearchDelegate extends SearchDelegate<Quote?> {
   QuoteSearchDelegate(this._repository);
 
@@ -44,7 +47,7 @@ class QuoteSearchDelegate extends SearchDelegate<Quote?> {
         message: 'Search quotes by word or author.',
       );
     }
-    final results = _repository.search(query);
+    final results = _repository.smartSearch(query);
     if (results.isEmpty) {
       return const StatusView(
         icon: Icons.search_off,

@@ -7,6 +7,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/util/bidi.dart';
 import '../../../data/models/quote.dart';
 
 /// A background preset for the shareable quote image.
@@ -124,6 +125,8 @@ class _Preview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Arabic can't use the Latin-only serif; fall back to the platform font.
+    final arabic = isRtl(quote.content);
     return Container(
       width: 320,
       constraints: const BoxConstraints(minHeight: 320),
@@ -136,32 +139,35 @@ class _Preview extends StatelessWidget {
         ),
         borderRadius: BorderRadius.circular(24),
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(Icons.format_quote_rounded,
-              size: 40, color: background.textColor.withValues(alpha: 0.9)),
-          const SizedBox(height: 12),
-          Text(
-            quote.content,
-            style: TextStyle(
-              fontFamily: serif ? AppTheme.serifFamily : null,
-              fontSize: 24,
-              height: 1.35,
-              fontWeight: FontWeight.w500,
-              color: background.textColor,
+      child: Directionality(
+        textDirection: directionOf(quote.content),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(Icons.format_quote_rounded,
+                size: 40, color: background.textColor.withValues(alpha: 0.9)),
+            const SizedBox(height: 12),
+            Text(
+              quote.content,
+              style: TextStyle(
+                fontFamily: (serif && !arabic) ? AppTheme.serifFamily : null,
+                fontSize: 24,
+                height: arabic ? 1.6 : 1.35,
+                fontWeight: FontWeight.w500,
+                color: background.textColor,
+              ),
             ),
-          ),
-          const SizedBox(height: 20),
-          Text(
-            '— ${quote.author}',
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-              color: background.textColor.withValues(alpha: 0.85),
+            const SizedBox(height: 20),
+            Text(
+              '— ${quote.author}',
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                color: background.textColor.withValues(alpha: 0.85),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

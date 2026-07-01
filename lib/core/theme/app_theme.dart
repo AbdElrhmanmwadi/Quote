@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../util/bidi.dart';
+
 /// Centralized Material 3 theme for the app.
 ///
 /// A single seed color drives both the light and dark [ColorScheme]s, so the
@@ -62,12 +64,17 @@ class AppTheme {
     );
   }
 
-  /// Serif text style used for the body of a quote.
-  static TextStyle quoteStyle(BuildContext context) {
+  /// Text style for the body of a quote.
+  ///
+  /// The Cormorant serif is Latin-only, so when [text] is Arabic we fall back to
+  /// the platform font (which has proper Arabic glyphs) and give it a little
+  /// more line height for the taller script.
+  static TextStyle quoteStyle(BuildContext context, {String? text}) {
+    final arabic = text != null && isRtl(text);
     return TextStyle(
-      fontFamily: serifFamily,
+      fontFamily: arabic ? null : serifFamily,
       fontSize: 24,
-      height: 1.35,
+      height: arabic ? 1.6 : 1.35,
       fontWeight: FontWeight.w500,
       color: Theme.of(context).colorScheme.onSurface,
     );

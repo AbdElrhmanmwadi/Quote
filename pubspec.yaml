@@ -72,9 +72,11 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
-  # Bundled offline quote dataset (the app no longer depends on a remote API).
+  # Bundled offline quote datasets (the app no longer depends on a remote API).
+  # quotes_ar.json adds curated Arabic quotes from Arab poets and writers.
   assets:
     - assets/quotes.json
+    - assets/quotes_ar.json
 
   # Cormorant is used for the serif display of quote text.
   fonts:

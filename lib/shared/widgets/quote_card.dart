@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../core/theme/app_theme.dart';
+import '../../core/util/bidi.dart';
 import '../../data/models/quote.dart';
 import '../../features/collections/widgets/add_to_collection_sheet.dart';
 import '../../features/favorites/cubit/favorites_cubit.dart';
@@ -98,7 +99,11 @@ class _QuoteCardState extends State<QuoteCard> {
           Container(
               color: colors.surfaceContainerHigh,
               padding: const EdgeInsets.fromLTRB(20, 24, 20, 16),
-              child: Column(
+              // Flip alignment/direction to match the quote's own language so
+              // Arabic reads right-to-left and English left-to-right.
+              child: Directionality(
+                textDirection: directionOf(_quote.content),
+                child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Icon(Icons.format_quote_rounded,
@@ -107,11 +112,11 @@ class _QuoteCardState extends State<QuoteCard> {
                   if (widget.highlighted != null)
                     SelectableText.rich(
                       widget.highlighted!,
-                      style: AppTheme.quoteStyle(context),
+                      style: AppTheme.quoteStyle(context, text: _quote.content),
                     )
                   else
                     SelectableText(_quote.content,
-                        style: AppTheme.quoteStyle(context)),
+                        style: AppTheme.quoteStyle(context, text: _quote.content)),
                   const SizedBox(height: 16),
                   Text(
                     '— ${_quote.author}',
@@ -139,6 +144,7 @@ class _QuoteCardState extends State<QuoteCard> {
                     ),
                   ],
                 ],
+                ),
               ),
           ),
           const Divider(height: 1),

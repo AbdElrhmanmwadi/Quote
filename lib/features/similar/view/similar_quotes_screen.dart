@@ -6,7 +6,7 @@ import '../../../data/repositories/quote_repository.dart';
 import '../../../shared/widgets/quote_card.dart';
 import '../../../shared/widgets/status_view.dart';
 
-/// Shows quotes related to a given one (shared tags / same author).
+/// Shows quotes related to a given one (semantic content + shared tags/author).
 class SimilarQuotesScreen extends StatelessWidget {
   const SimilarQuotesScreen({super.key, required this.quote});
 

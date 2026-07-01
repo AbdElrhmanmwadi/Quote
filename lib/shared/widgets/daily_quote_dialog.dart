@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/storage/preferences_service.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/util/bidi.dart';
 import '../../data/repositories/quote_repository.dart';
 
 /// Shows a "Quote of the day" dialog at most once per calendar day.
@@ -30,20 +31,24 @@ class DailyQuote {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Quote of the day'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(quote.content, style: AppTheme.quoteStyle(context)),
-            const SizedBox(height: 12),
-            Text(
-              '— ${quote.author}',
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    color: Theme.of(context).colorScheme.primary,
-                    fontWeight: FontWeight.w600,
-                  ),
-            ),
-          ],
+        content: Directionality(
+          textDirection: directionOf(quote.content),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(quote.content,
+                  style: AppTheme.quoteStyle(context, text: quote.content)),
+              const SizedBox(height: 12),
+              Text(
+                '— ${quote.author}',
+                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      color: Theme.of(context).colorScheme.primary,
+                      fontWeight: FontWeight.w600,
+                    ),
+              ),
+            ],
+          ),
         ),
         actions: [
           FilledButton(

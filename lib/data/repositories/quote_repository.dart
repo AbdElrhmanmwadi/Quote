@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/services.dart' show rootBundle;
 
+import '../../core/nlp/semantic_index.dart';
 import '../models/quote.dart';
 import '../models/tag.dart';
 
@@ -28,21 +29,50 @@ class QuoteRepository {
   QuoteRepository({Random? random, List<Quote>? seed})
       : _random = random ?? Random(),
         _quotes = seed ?? const [],
-        _loaded = seed != null;
+        _loaded = seed != null {
+    if (_loaded) _buildIndex();
+  }
 
   final Random _random;
   List<Quote> _quotes;
   bool _loaded;
 
+  /// Offline semantic engine over [_quotes]; rebuilt whenever the dataset loads.
+  SemanticIndex? _index;
+
   /// Loads and caches the dataset. Safe to call repeatedly.
   Future<void> ensureLoaded() async {
     if (_loaded) return;
-    final raw = await rootBundle.loadString('assets/quotes.json');
-    final decoded = json.decode(raw) as List<dynamic>;
-    _quotes = decoded
-        .map((e) => Quote.fromJson(e as Map<String, dynamic>))
-        .toList(growable: false);
+    final quotes = <Quote>[
+      ...await _loadAsset('assets/quotes.json'),
+      ...await _loadAsset('assets/quotes_ar.json'),
+    ];
+    _quotes = List.unmodifiable(quotes);
     _loaded = true;
+    _buildIndex();
+  }
+
+  /// Parses a bundled quote asset. A missing/empty asset yields no quotes so a
+  /// dataset issue can never crash startup.
+  Future<List<Quote>> _loadAsset(String path) async {
+    try {
+      final raw = await rootBundle.loadString(path);
+      final decoded = json.decode(raw) as List<dynamic>;
+      return decoded
+          .map((e) => Quote.fromJson(e as Map<String, dynamic>))
+          .toList(growable: false);
+    } catch (_) {
+      return const [];
+    }
+  }
+
+  /// Builds the TF-IDF semantic index. Each quote is indexed on its content
+  /// plus author and (humanized) tags, so all three contribute to relevance.
+  void _buildIndex() {
+    _index = SemanticIndex.build([
+      for (final q in _quotes)
+        '${q.content} ${q.author} ${q.tags.map(_humanize).join(' ')}',
+    ]);
   }
 
   /// All available tags, sorted by popularity then name.
@@ -102,7 +132,10 @@ class QuoteRepository {
   List<Quote> byTag(String slug) =>
       _quotes.where((q) => q.tags.contains(slug)).toList(growable: false);
 
-  /// Case-insensitive search across quote content and author.
+  /// Case-insensitive substring search across quote content and author.
+  ///
+  /// Kept for exact/partial-word matching (e.g. while the user is still typing
+  /// a word). For meaning-aware results, prefer [smartSearch].
   List<Quote> search(String query) {
     final q = query.trim().toLowerCase();
     if (q.isEmpty) return const [];
@@ -113,20 +146,56 @@ class QuoteRepository {
         .toList(growable: false);
   }
 
+  /// Ranks quotes by semantic relevance to [query] using the offline TF-IDF
+  /// index, best first. Returns nothing for a blank query.
+  List<Quote> semanticSearch(String query, {int limit = 50}) {
+    final index = _index;
+    if (index == null || query.trim().isEmpty) return const [];
+    return index
+        .query(query, limit: limit)
+        .map((s) => _quotes[s.index])
+        .toList(growable: false);
+  }
+
+  /// Meaning-aware search: exact substring matches first (so a term the user
+  /// literally typed is never buried), then semantically related quotes that
+  /// the substring pass missed. This is the search the UI should call.
+  List<Quote> smartSearch(String query, {int limit = 50}) {
+    if (query.trim().isEmpty) return const [];
+    final results = <Quote>[];
+    final seen = <String>{};
+    for (final quote in [...search(query), ...semanticSearch(query, limit: limit)]) {
+      if (seen.add(quote.id)) results.add(quote);
+      if (results.length >= limit) break;
+    }
+    return results;
+  }
+
   /// Quotes most similar to [quote], best first.
   ///
-  /// Scoring is purely offline: +2 per shared tag and +3 for the same author,
-  /// which favors topical matches while still surfacing the author's other
-  /// work. The quote itself and anything with a zero score are excluded.
+  /// Scoring blends three fully-offline signals: semantic content similarity
+  /// from the TF-IDF index (weighted highest, so quotes that *say* something
+  /// alike surface even across authors and tags), plus the original heuristics
+  /// of +2 per shared tag and +3 for the same author. The quote itself and
+  /// anything scoring zero are excluded.
   List<Quote> similar(Quote quote, {int limit = 12}) {
-    final scored = <({Quote quote, int score})>[];
-    for (final other in _quotes) {
+    final self = _quotes.indexWhere((q) => q.id == quote.id);
+    final index = _index;
+
+    final scored = <({Quote quote, double score})>[];
+    for (var i = 0; i < _quotes.length; i++) {
+      final other = _quotes[i];
       if (other.id == quote.id) continue;
-      var score = 0;
+
+      var score = 0.0;
+      if (index != null && self >= 0) {
+        score += 5 * index.similarity(self, i);
+      }
       for (final tag in other.tags) {
         if (quote.tags.contains(tag)) score += 2;
       }
       if (other.author == quote.author) score += 3;
+
       if (score > 0) scored.add((quote: other, score: score));
     }
     scored.sort((a, b) => b.score.compareTo(a.score));
