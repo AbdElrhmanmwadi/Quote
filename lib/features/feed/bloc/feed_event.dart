@@ -16,3 +16,13 @@ class FeedRefreshed extends FeedEvent {
 class FeedNextPageRequested extends FeedEvent {
   const FeedNextPageRequested();
 }
+
+/// Switch the feed's language filter and reload from the first page.
+class FeedLanguageChanged extends FeedEvent {
+  const FeedLanguageChanged(this.language);
+
+  final QuoteLanguage language;
+
+  @override
+  List<Object?> get props => [language];
+}

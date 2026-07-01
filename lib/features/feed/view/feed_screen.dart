@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../core/util/quote_language.dart';
 import '../../../data/repositories/quote_repository.dart';
 import '../../../shared/widgets/quote_card.dart';
 import '../../../shared/widgets/status_view.dart';
@@ -73,6 +74,29 @@ class _FeedScreenState extends State<FeedScreen> {
                 ),
               );
             },
+          ),
+          BlocBuilder<FeedBloc, FeedState>(
+            buildWhen: (prev, curr) => prev.language != curr.language,
+            builder: (context, state) => PopupMenuButton<QuoteLanguage>(
+              tooltip: 'Language',
+              icon: Icon(
+                Icons.translate,
+                color: state.language == QuoteLanguage.all
+                    ? null
+                    : Theme.of(context).colorScheme.primary,
+              ),
+              initialValue: state.language,
+              onSelected: (language) =>
+                  context.read<FeedBloc>().add(FeedLanguageChanged(language)),
+              itemBuilder: (context) => [
+                for (final language in QuoteLanguage.values)
+                  CheckedPopupMenuItem(
+                    value: language,
+                    checked: language == state.language,
+                    child: Text(language.label),
+                  ),
+              ],
+            ),
           ),
           IconButton(
             tooltip: 'Search',

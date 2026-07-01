@@ -4,6 +4,8 @@ import 'dart:math';
 import 'package:flutter/services.dart' show rootBundle;
 
 import '../../core/nlp/semantic_index.dart';
+import '../../core/util/bidi.dart';
+import '../../core/util/quote_language.dart';
 import '../models/quote.dart';
 import '../models/tag.dart';
 
@@ -94,7 +96,8 @@ class QuoteRepository {
     return tags;
   }
 
-  /// Returns a page of quotes, optionally filtered to [tagSlugs] (match ANY).
+  /// Returns a page of quotes, optionally filtered to [tagSlugs] (match ANY)
+  /// and/or a [language].
   ///
   /// [page] is 1-based. Pagination runs over the in-memory list, so it is
   /// instant and deterministic.
@@ -102,12 +105,13 @@ class QuoteRepository {
     required int page,
     int pageSize = 12,
     List<String> tagSlugs = const [],
+    QuoteLanguage language = QuoteLanguage.all,
   }) {
-    final source = tagSlugs.isEmpty
-        ? _quotes
-        : _quotes
-            .where((q) => q.tags.any(tagSlugs.contains))
-            .toList(growable: false);
+    final source = _quotes.where((q) {
+      if (!_matchesLanguage(language, q)) return false;
+      if (tagSlugs.isNotEmpty && !q.tags.any(tagSlugs.contains)) return false;
+      return true;
+    }).toList(growable: false);
 
     final start = (page - 1) * pageSize;
     if (start >= source.length) {
@@ -210,6 +214,19 @@ class QuoteRepository {
         .map((id) => index[id])
         .whereType<Quote>()
         .toList(growable: false);
+  }
+
+  /// Whether [quote] belongs to the requested [language], using script
+  /// detection on its content (Arabic is right-to-left, English is not).
+  static bool _matchesLanguage(QuoteLanguage language, Quote quote) {
+    switch (language) {
+      case QuoteLanguage.all:
+        return true;
+      case QuoteLanguage.arabic:
+        return isRtl(quote.content);
+      case QuoteLanguage.english:
+        return !isRtl(quote.content);
+    }
   }
 
   static String _humanize(String slug) {

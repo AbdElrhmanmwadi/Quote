@@ -9,6 +9,7 @@ class FeedState extends Equatable {
     this.page = 0,
     this.hasReachedMax = false,
     this.errorMessage = '',
+    this.language = QuoteLanguage.all,
   });
 
   final FeedStatus status;
@@ -16,6 +17,7 @@ class FeedState extends Equatable {
   final int page;
   final bool hasReachedMax;
   final String errorMessage;
+  final QuoteLanguage language;
 
   FeedState copyWith({
     FeedStatus? status,
@@ -23,6 +25,7 @@ class FeedState extends Equatable {
     int? page,
     bool? hasReachedMax,
     String? errorMessage,
+    QuoteLanguage? language,
   }) {
     return FeedState(
       status: status ?? this.status,
@@ -30,10 +33,11 @@ class FeedState extends Equatable {
       page: page ?? this.page,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
       errorMessage: errorMessage ?? this.errorMessage,
+      language: language ?? this.language,
     );
   }
 
   @override
   List<Object?> get props =>
-      [status, quotes, page, hasReachedMax, errorMessage];
+      [status, quotes, page, hasReachedMax, errorMessage, language];
 }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart' show ThemeMode;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../util/quote_language.dart';
+
 /// Thin, strongly-typed wrapper around [SharedPreferences].
 ///
 /// Replaces the previous singleton that exposed a generic, bool-only API.
@@ -28,6 +30,7 @@ class PreferencesService {
   static const _kNotificationMinute = 'notification_minute';
   static const _kStreakCount = 'streak_count';
   static const _kStreakLastOpen = 'streak_last_open';
+  static const _kFeedLanguage = 'feed_language';
 
   bool get onboardingComplete => _prefs.getBool(_kOnboardingComplete) ?? false;
   Future<void> setOnboardingComplete(bool value) =>
@@ -103,4 +106,18 @@ class PreferencesService {
 
   Future<void> setStreakLastOpen(DateTime date) =>
       _prefs.setString(_kStreakLastOpen, date.toIso8601String());
+
+  // --- Feed language filter --------------------------------------------------
+
+  /// The language the feed is filtered to. Defaults to showing all languages.
+  QuoteLanguage get feedLanguage {
+    final raw = _prefs.getString(_kFeedLanguage);
+    return QuoteLanguage.values.firstWhere(
+      (l) => l.name == raw,
+      orElse: () => QuoteLanguage.all,
+    );
+  }
+
+  Future<void> setFeedLanguage(QuoteLanguage language) =>
+      _prefs.setString(_kFeedLanguage, language.name);
 }

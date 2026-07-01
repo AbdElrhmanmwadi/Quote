@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:quote/core/util/quote_language.dart';
 import 'package:quote/data/models/quote.dart';
 import 'package:quote/data/repositories/quote_repository.dart';
 
@@ -77,6 +78,32 @@ void main() {
       for (var i = 0; i < 25; i++) {
         expect(r.randomQuote(excludeId: '1').id, isNot('1'));
       }
+    });
+  });
+
+  group('QuoteRepository language filter', () {
+    const mixed = [
+      Quote(id: 'e1', content: 'Alpha wisdom', author: 'Zoe'),
+      Quote(id: 'a1', content: 'العلم نور', author: 'المتنبي'),
+      Quote(id: 'e2', content: 'Beta hope', author: 'Amy'),
+      Quote(id: 'a2', content: 'الصبر مفتاح الفرج', author: 'مثل'),
+    ];
+    QuoteRepository repo() => QuoteRepository(seed: mixed);
+
+    test('page() returns only Arabic quotes when filtered to arabic', () {
+      final page = repo().page(page: 1, pageSize: 10, language: QuoteLanguage.arabic);
+      expect(page.quotes.map((q) => q.id), ['a1', 'a2']);
+    });
+
+    test('page() returns only English quotes when filtered to english', () {
+      final page =
+          repo().page(page: 1, pageSize: 10, language: QuoteLanguage.english);
+      expect(page.quotes.map((q) => q.id), ['e1', 'e2']);
+    });
+
+    test('page() with QuoteLanguage.all returns everything', () {
+      final page = repo().page(page: 1, pageSize: 10);
+      expect(page.quotes.map((q) => q.id), ['e1', 'a1', 'e2', 'a2']);
     });
   });
 }
