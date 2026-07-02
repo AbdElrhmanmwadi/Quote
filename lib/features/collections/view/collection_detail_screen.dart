@@ -29,8 +29,9 @@ class CollectionDetailScreen extends StatelessWidget {
           body: quotes.isEmpty
               ? const StatusView(
                   icon: Icons.collections_bookmark_outlined,
-                  message: 'This collection is empty.\n'
-                      'Use a quote\'s menu to add it here.',
+                  message: 'This collection is empty.\n\n'
+                      'Open any quote, tap the ⋯ (More) button under it, '
+                      'then choose “Add to collection”.',
                 )
               : ListView.builder(
                   padding: const EdgeInsets.symmetric(vertical: 8),
