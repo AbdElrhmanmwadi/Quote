@@ -42,27 +42,36 @@ class _SettingsScreenState extends State<SettingsScreen> {
     if (_busyNotifications) return;
     final prefs = context.read<PreferencesService>();
     final service = context.read<NotificationService>();
+    // Capture the messenger up front so we never touch `context` after an await.
+    final messenger = ScaffoldMessenger.of(context);
     setState(() => _busyNotifications = true);
     try {
       if (value) {
         final granted = await service.requestPermission();
         if (!granted) {
-          if (!mounted) return;
-          ScaffoldMessenger.of(context).showSnackBar(
+          messenger.showSnackBar(
             const SnackBar(
-                content: Text('Notification permission was denied.')),
+              content: Text(
+                  'Notifications are blocked. Enable them in system settings.'),
+            ),
           );
           return;
         }
+        // Schedule first; only mark the preference on once it actually
+        // succeeds, so prefs and the OS never disagree.
+        await service.scheduleDaily(_reminderTime.hour, _reminderTime.minute);
         await prefs.setNotificationsEnabled(true);
-        await service.scheduleDaily(
-            _reminderTime.hour, _reminderTime.minute);
       } else {
-        await prefs.setNotificationsEnabled(false);
         await service.cancel();
+        await prefs.setNotificationsEnabled(false);
       }
       if (!mounted) return;
       setState(() => _notificationsEnabled = value);
+    } catch (e) {
+      // Surface the failure instead of silently leaving the switch stuck.
+      messenger.showSnackBar(
+        SnackBar(content: Text("Couldn't update the reminder: $e")),
+      );
     } finally {
       if (mounted) setState(() => _busyNotifications = false);
     }
@@ -130,8 +139,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ListTile(
             leading: const Icon(Icons.schedule_outlined),
             title: const Text('Reminder time'),
-            subtitle: Text(_reminderTime.format(context)),
-            enabled: _notificationsEnabled && !_busyNotifications,
+            // Always editable: the user can set their preferred time even
+            // before turning notifications on. It only reschedules a live
+            // reminder when notifications are enabled.
+            subtitle: Text(_notificationsEnabled
+                ? _reminderTime.format(context)
+                : '${_reminderTime.format(context)} · turn on the reminder above'),
+            enabled: !_busyNotifications,
             onTap: _pickReminderTime,
           ),
           const SizedBox(height: 16),
